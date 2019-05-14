@@ -1,10 +1,10 @@
 const express = require("express");
-//const connectDB = require('./config/db');
+const connectDatabase = require('./config/db');
 
 const app = express();
 
 ////Connect Database
-//connectDB();
+connectDatabase();
 
 //Bodyparser Middleware
 app.use(express.json());
