@@ -1,6 +1,5 @@
 const express = require("express");
 const connectDatabase = require('./config/db');
-
 const app = express();
 
 ////Connect Database
@@ -10,20 +9,17 @@ connectDatabase();
 app.use(express.json());
 
 
-app.get('/', (req, res) => {
-    res.send('API Running')
-});
+//Test 
+app.get('/', (req, res) => { res.send('API Running') });
 
 
 
-
-// app.use('/api/users', require('./routes/api/users'));
-// app.use('/api/auth', require('./routes/api/auth'));
-// app.use('/api/profile', require('./routes/api/profile'));
-// app.use('/api/posts', require('./routes/api/posts'));
+//Define Routes 
+ app.use('/api/users', require('./routes/api/users'));
+ app.use('/api/shops', require('./routes/api/shops'));
 
 
 
+//Define port listen & start server
 const PORT = process.env.PORT || 8888;
-
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
