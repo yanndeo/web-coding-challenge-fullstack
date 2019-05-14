@@ -2,5 +2,6 @@
     "mongoURI": "mongodb+srv://yanndeo:deo1234@devworker-wovin.mongodb.net/list_shops_uremote?retryWrites=true",
     "jwtSecret": "web_coding_challenge",
     "pwdSalt": 10,
-    "expirationTime" : 3600000
+    "expirationTime" : 3600000,
+    "faker_data_shop" : 20
 }
