@@ -2,24 +2,24 @@ const express = require("express");
 const connectDatabase = require('./config/db');
 const app = express();
 
-////Connect Database
+// Connect Database
 connectDatabase();
 
-//Bodyparser Middleware
+// Bodyparser Middleware
 app.use(express.json());
 
 
-//Test 
+// Test 
 app.get('/', (req, res) => { res.send('API Running') });
 
 
 
-//Define Routes 
+// Define Routes 
  app.use('/api/users', require('./routes/api/users'));
  app.use('/api/shops', require('./routes/api/shops'));
 
 
 
-//Define port listen & start server
+// Define port listen & start server
 const PORT = process.env.PORT || 8888;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`))
