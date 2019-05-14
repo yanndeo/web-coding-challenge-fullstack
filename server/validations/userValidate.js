@@ -16,6 +16,15 @@ module.exports = {
             .matches('[A-Z]').withMessage('Password must contain at least 1 uppercase letter.')
 
           
+    ],
+
+    userLoginValidate: [
+        check('email', 'Please include a valid email').isEmail(),
+        check('password', 'Password is required').exists()
     ]
+
    
-}
+};
+
+
+

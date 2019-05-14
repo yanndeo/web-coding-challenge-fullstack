@@ -1,15 +1,17 @@
 const express =  require('express');
 const router = express.Router();
 const { validationResult } = require("express-validator/check");
+const bcrypt =  require('bcryptjs');
 
 //Model
 const User =  require('../../models/User');
-//Validation 
-const checked = require('../../validations/registerValidate');
+//Validations
+const checked = require('../../validations/userValidate');
+
 
 
 /**
- * @api      POST api/users/register
+ * @api      POST api/register
  * @desc     Register Route
  * @access   Public */
 router.post('/register', checked.userRegisterValidate, async(req, res)=>{
@@ -18,7 +20,6 @@ router.post('/register', checked.userRegisterValidate, async(req, res)=>{
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-
       return res.status(422).json({ errors: errors.array() })
     };
 
@@ -43,9 +44,8 @@ router.post('/register', checked.userRegisterValidate, async(req, res)=>{
                 await user.save();
 
                 //Return jsonwebtoken ::User Model
-                const token = await User.generateWebToken(user.id);
-
-                return res.status(201).json({ token })
+                // const token = await User.generateWebToken(user.id);
+                return res.status(201).json({ user })
             }
                 
 
@@ -55,7 +55,61 @@ router.post('/register', checked.userRegisterValidate, async(req, res)=>{
         res.status(500).send('Server error')
 
     }
+})
+
+
+
+/**
+ * @api      POST api/login
+ * @desc     Authentificate user & and get token (login)
+ * @access   Public */
+router.post('/login', checked.userLoginValidate, async (req, res) => {
+
+    //check Errors Validations
+    const errors = validationResult(req);
+    if (!errors.isEmpty())
+        return res.status(422).json({ errors: errors.array() });
+
+
+    let { password, email } = req.body;
+
+    try {
+        //check if user not exist 
+        let user = await User.findOne({ email });
+
+        if (!user) {
+            return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+        }
+
+        //Compare user 's password : return boolean.
+        let isMatch = await bcrypt.compare(password, user.password);
+
+        if (!isMatch) {
+            return res.status(400).json({ errors: [{ msg: 'Invalid credentials' }] });
+
+        }
+
+        console.log('user_id', user.id)
+        //Return jsonwebtoken ::User Model
+        const token = await User.generateWebToken(user.id);
+
+        return res.status(201).json({ token })
+
+
+    } catch(error) {
+
+        console.log('login_user_error:', error.message);
+        res.status(500).send('Server error')
+    }
+
 });
+
+
+
+
+
+
+
 
 
 
