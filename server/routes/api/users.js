@@ -13,7 +13,8 @@ const checked = require('../../validations/userValidate');
 /**
  * @api      POST api/register
  * @desc     Register Route
- * @access   Public */
+ * @access   Public 
+ * */
 router.post('/register', checked.userRegisterValidate, async(req, res)=>{
 
     //check Errors Validations
@@ -62,7 +63,8 @@ router.post('/register', checked.userRegisterValidate, async(req, res)=>{
 /**
  * @api      POST api/login
  * @desc     Authentificate user & and get token (login)
- * @access   Public */
+ * @access   Public 
+ * */
 router.post('/login', checked.userLoginValidate, async (req, res) => {
 
     //check Errors Validations

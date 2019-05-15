@@ -39,6 +39,14 @@ contact_information:{
     },
 
 },
+ dislikes: [
+        {
+            user: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "users"
+            }
+        }
+    ],
    likes: [
         {
             user: {
@@ -46,7 +54,9 @@ contact_information:{
                 ref: "users"
             }
         }
-    ] 
+    ],
+
+   
 
 
 });

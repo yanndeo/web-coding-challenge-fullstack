@@ -35,13 +35,16 @@ const fakerShopData = async () => {
 
           let shopObj = new Shop(magasinFields);
           await shopObj.save();
+          //
           let shops = await Shop.find();
 
           console.log("Faker_info: Data Generate", shops);
+          console.log( i, "Faker_info: Data has been generated");
+
         }
 
         }else{
-          console.log('Faker_info: Database already contains data');
+        console.log(' Faker_info: Database already contains data');
 
         }
 
