@@ -9,24 +9,58 @@ const Shop =  require('../../models/Shop');
 
 
 
+
+
 /**
  * @api      GET api/shops
- * @desc     Get all shops
+ * @desc     Get all shops without criteria
  * @access   Public 
  * */
-router.get('/', async(req, res) => {
+router.get('/', authorization, async (req, res) => {
 
     try {
 
-        const shops = await Shop.find().sort({ name: 1 }).select('-__v');
+        const shops = await Shop.find()
+                                .where("likes.user")
+                                .ne(req.user.id)
+                                .sort({ name: 1 })
+                                .select("-__v");
 
-        return res.status(200).json(shops);
+        return res.json(shops.length);
 
     } catch (error) {
-        console.error('get_all_shops_error', error.message);
+        console.error('get_all_shops_error:', error.message);
         return res.status(500).send('Server error')
     }
 });
+
+
+
+
+
+
+/**
+ * @api      GET api/shops/default
+ * @desc     Get all shops without criteria(just for test from postman).
+ * @access   Public 
+ * */
+router.get('/default', async (req, res) => {
+    try {
+        const shops = await Shop.find()
+                                .sort({ name: 1 })
+                                .select("-__v");
+
+        return res.json(shops);
+    } catch (error) {
+        console.error("get_all_shops_error", error.message);
+        return res.status(500).send("Server error");
+    }
+});
+
+
+
+
+
 
 
 
@@ -60,7 +94,7 @@ router.put('/like/:shopID',authorization, async(req, res) => {
 
                 //And add his like
                 shop.likes.unshift({ user: req.user.id });
-                await shop.save();
+                await shop.save();                    
                 return res.status(200).json(shop);
             }
 
@@ -88,6 +122,14 @@ router.put('/like/:shopID',authorization, async(req, res) => {
     }
  
 });
+
+
+
+
+
+
+
+
 
 /**
  * @api      PUT api/shops/dislike/:shopID
@@ -133,10 +175,8 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
 
             }
             
-                
-
+            
         }
-
 
     } catch (error) {
 
@@ -149,6 +189,52 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
     }
 
 });
+
+
+
+
+
+
+
+
+
+
+
+
+/**
+ * @api      GET api/shops/preferred
+ * @desc     Get list of shops preferred by user .
+ * @access   Private 
+ * */
+router.get('/preferred' , authorization, async(req, res)=>{
+
+    try {
+
+        //Find Shops that user liked
+
+        let shops_preferred = await Shop
+                                    .where('likes.user')
+                                    .equals(req.user.id)
+                                    .select('-dislikes -__v')
+                                    .sort({_id: -1});
+            
+        res.json(shops_preferred);
+
+    } catch (error) {
+        console.log("shop_preferred", error.message);
+        res.status(500).send("Server Error");
+    }
+})
+
+
+
+
+
+
+
+
+
+
 
 
 /**
@@ -187,6 +273,12 @@ router.get('/distance/:distance', authorization, async (req, res) => {
 
 
 
+
+
+
+
+
+
 /**
  * @api      GET api/shops/:id
  * @desc     Get shop by ID
@@ -213,6 +305,14 @@ router.get('/:id', async (req, res) => {
         return res.status(500).send('Server error')
     }
 });
+
+
+
+
+
+
+
+
 
 
 module.exports = router;
