@@ -13,8 +13,8 @@ const Shop =  require('../../models/Shop');
 
 /**
  * @api      GET api/shops
- * @desc     Get all shops without criteria
- * @access   Public 
+ * @desc     Get all shops :main list
+ * @access   Private 
  * */
 router.get('/', authorization, async (req, res) => {
 
@@ -38,26 +38,15 @@ router.get('/', authorization, async (req, res) => {
 
 
 
-
 /**
- * @api      GET api/shops/default
- * @desc     Get all shops without criteria(just for test from postman).
- * @access   Public 
+ * @api      GET api/shops/:distance
+ * @desc     Get list of shops sorted by distance.
+ * @access   Private 
  * */
-router.get('/default', async (req, res) => {
-    try {
-        const shops = await Shop.find()
-                                .sort({ name: 1 })
-                                .select("-__v");
+router.get('/distance/:distance', authorization, async (req, res) => {
 
-        return res.json(shops);
-    } catch (error) {
-        console.error("get_all_shops_error", error.message);
-        return res.status(500).send("Server error");
-    }
+   
 });
-
-
 
 
 
@@ -74,7 +63,8 @@ router.put('/like/:shopID',authorization, async(req, res) => {
 
     try {
 
-        let shop = await Shop.findById(req.params.shopID).select('-__v');
+        let shop = await Shop.getShopByID(req.params.shopID);
+
 
         if(!shop)
             return res.status(404).send({ msg:'Sorry Shop not found'});
@@ -113,7 +103,7 @@ router.put('/like/:shopID',authorization, async(req, res) => {
 
     } catch (error) {
         
-        console.log("user_like_shop", error.message);
+        console.log("user_like_shop:", error.message);
 
         if (error.king === "ObjectId") {
             res.status(404).send({ msg: "Sorry Shop not found" });
@@ -122,8 +112,6 @@ router.put('/like/:shopID',authorization, async(req, res) => {
     }
  
 });
-
-
 
 
 
@@ -141,7 +129,9 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
 
     try {
 
-        let shop = await Shop.findById(req.params.shopID).select('-__v');
+        //let shop = await Shop.findById(req.params.shopID).select('-__v');
+        let shop = await Shop.getShopByID(req.params.shopID);
+
 
         if (!shop)
             return res.status(404).send({ msg: 'Sorry Shop not found' });
@@ -199,8 +189,6 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
 
 
 
-
-
 /**
  * @api      GET api/shops/preferred
  * @desc     Get list of shops preferred by user .
@@ -210,18 +198,12 @@ router.get('/preferred' , authorization, async(req, res)=>{
 
     try {
 
-        //Find Shops that user liked
-
-        let shops_preferred = await Shop
-                                    .where('likes.user')
-                                    .equals(req.user.id)
-                                    .select('-dislikes -__v')
-                                    .sort({_id: -1});
-            
-        res.json(shops_preferred);
+        const shops_preferred = await Shop.shopsListPreferredByUser(req.user.id);
+ 
+        return res.json(shops_preferred);
 
     } catch (error) {
-        console.log("shop_preferred", error.message);
+        console.log("shop_preferred:", error.message);
         res.status(500).send("Server Error");
     }
 })
@@ -233,62 +215,36 @@ router.get('/preferred' , authorization, async(req, res)=>{
 
 
 
-
-
-
-
 /**
- * @api      GET api/shops/:distance
- * @desc     Get list of shops sorted by distance.
- * @access   Private 
+ * @api      GET api/shops/default
+ * @desc     Get all shops without criteria(just for test from postman).
+ * @access   Public 
  * */
-router.get('/distance/:distance', authorization, async (req, res) => {
-
+router.get('/default', async (req, res) => {
     try {
+        const shops = await Shop.find().sort({ name: 1 }).select("-__v");
 
-        let distance =Number(req.params.distance);
-
-        const shops = await Shop.find({
-            location: {
-                $near: {
-                    $maxDistance: 1000/6371,
-                
-                }
-            }
-        }) ;
-
-
-        return res.status(200).json(shops);
+        return res.json(shops);
 
     } catch (error) {
-
-        console.error('get_list_shops_by_distance', error.message);
-        return res.status(500).send('Server error')
+        console.error("get_allshops_error", error.message);
+        return res.status(500).send("Server error");
     }
 });
 
 
 
 
-
-
-
-
-
-
-
-
-
 /**
- * @api      GET api/shops/:id
+ * @api      GET api/shops/:shopID
  * @desc     Get shop by ID
  * @access   Public 
  * */
-router.get('/:id', async (req, res) => {
+router.get('/:shopID', async (req, res) => {
 
     try {
 
-        const shop = await Shop.findById(req.params.id).select('-__v')
+        const shop = await Shop.getShopByID(req.params.shopID); ;
 
         if (!shop) {
             return res.status(404).json({ msg: 'Shop not found' });
@@ -299,9 +255,9 @@ router.get('/:id', async (req, res) => {
 
         console.error('get_shop_by_id', error.message);
 
-        if (err.king === 'ObjectId') {
-            res.status(404).send({ msg: 'Sorry shop not found' });
-        }
+            if (error.king === 'ObjectId'){
+                res.status(404).send({ msg: "Sorry shop not found" });
+            } 
         return res.status(500).send('Server error')
     }
 });
@@ -310,6 +266,52 @@ router.get('/:id', async (req, res) => {
 
 
 
+
+
+/**
+ * @api      DELETE api/shops/preferred/:shopID
+ * @desc     Get list of shops preferred by user .
+ * @access   Private 
+ * */
+router.delete('/preferred/:shopID', authorization, async (req, res) => {
+
+    try {
+        
+        //Make sure shop exist:
+        let shop = await Shop.getShopByID(req.params.shopID);
+
+        if(!shop){
+
+            res.status(404).send({ msg: "Sorry shop not found" });
+
+        }else{
+
+            //Make sure his preferreds shop list contain this shop:
+            if (shop.likes.filter(like => like.user.toString() === req.user.id).length > 0) {
+
+                //Delete
+                const removeIndex = shop.likes.map(like => like.user.toString()).indexOf(req.user.id);
+                shop.likes.splice(removeIndex, 1);
+
+                //save
+                await shop.save();
+                return res.status(200).json({ msg: "shop removed from list ." });
+            }
+            else{
+                return res.status(400).json({ msg: "this shop does not appear in your list . " });
+
+            }
+
+
+            
+        }
+
+           
+    } catch (error) {
+        console.error("shop_preferred_delete:", error.message);
+        res.status(500).send("Server Error");
+    }
+})
 
 
 

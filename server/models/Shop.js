@@ -65,6 +65,43 @@ contact_information:{
 ShopSchema.index({location: "2dsphere" });
 
 
+
+
+/**
+ * STATIC METHOD: 
+ * Return Shops that user liked
+ */
+ShopSchema.statics.shopsListPreferredByUser = async function(userID) {
+  try {
+    return await Shop.where("likes.user")
+                     .equals(userID)
+                     .select("-dislikes -__v")
+                     .sort({ _id: -1 });
+  } catch (error) {
+    console.error("shop_preferred_method:", error.message);
+    res.status(500).send("Server Error");
+  }
+};
+
+
+/**
+ * STATIC METHOD: 
+ * Return Shops that user liked
+ */
+ShopSchema.statics.getShopByID = async function(shopID) {
+
+    try {
+        console.log(shopID)
+        return await Shop.findById(shopID)
+                         .select("-__v");
+
+    } catch (error) {
+        console.error("find_shop_method:", error.message);
+        res.status(500).send("Server Error")
+    }
+};
+
+
 const Shop = mongoose.model('shops', ShopSchema);
 
 module.exports = Shop;
