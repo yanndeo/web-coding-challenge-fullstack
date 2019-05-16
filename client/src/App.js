@@ -1,11 +1,14 @@
 import React,{ Fragment } from 'react';
-import './App.css';
+import { Provider } from "react-redux";
+import store from './store';
+
 
 const App = () => (
-
-  <Fragment>
-    <h1> Test2</h1>
-  </Fragment>
+  
+  <Provider store={store} >
+      <Fragment>
+      </Fragment>
+  </Provider>
 )
   
 

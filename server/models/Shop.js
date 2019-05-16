@@ -17,6 +17,7 @@ description:{
     enum: ['restaurant', 'Ready-To-wear', 'perfumeries','apple-store', 'mall', 'phone-store']
 },
 
+
 location: {
     type: { type: String, default: 'Point' },
     coordinates: [Number]
@@ -100,6 +101,10 @@ ShopSchema.statics.getShopByID = async function(shopID) {
         res.status(500).send("Server Error")
     }
 };
+
+
+
+
 
 
 const Shop = mongoose.model('shops', ShopSchema);
