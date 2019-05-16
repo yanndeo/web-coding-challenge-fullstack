@@ -21,10 +21,15 @@ const fakerShopData = async () => {
           let phone = faker.phone.phoneNumber();
           let lng = faker.address.longitude();
           let lat = faker.address.latitude();
+          let type = faker.random.arrayElement(['restaurant', 'Ready-To-wear', 'perfumeries', 'apple-store', 'mall', 'phone-store']);
+          let imageURL = faker.random.arrayElement(['cloth_1.jpg', 'blog_4.jpeg', 'blog_3.jpg', 'blog_2.jpg', 'blog_1.jpg'])
 
           //Build profile objet
           let magasinFields = {};
           magasinFields.name = name;
+          magasinFields.type = type;
+          magasinFields.imageURL = imageURL;
+
           magasinFields.contact_information = {};
           magasinFields.contact_information.city = city;
           magasinFields.contact_information.phone = phone;

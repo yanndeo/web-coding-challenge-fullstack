@@ -14,9 +14,12 @@ description:{
 
  type:{
     type:String,
-    enum: ['restaurant', 'Ready-To-wear', 'perfumeries','apple-store', 'mall', 'phone-store']
+   // enum: ['restaurant', 'Ready-To-wear', 'perfumeries','apple-store', 'mall', 'phone-store']
 },
 
+imageURL:{
+    type : String
+},
 
 location: {
     type: { type: String, default: 'Point' },
