@@ -45,8 +45,8 @@ router.post('/register', checked.userRegisterValidate, async(req, res)=>{
                 await user.save();
 
                 //Return jsonwebtoken ::User Model
-                // const token = await User.generateWebToken(user.id);
-                return res.status(201).json({ user })
+                 const token = await User.generateWebToken(user.id);
+                return res.status(201).json({ token })
             }
                 
 

@@ -1,12 +1,22 @@
 import React, { Component ,Fragment} from 'react'
 import ShopItem from './ShopItem';
 import SubNavbar from './layout/SubNavbar';
-import { Link } from "react-router-dom";
+//import { Link } from "react-router-dom";
 
 
 class ShopListPreferred extends Component {
 
     
+    componentDidMount() {
+        document.title = `Preferred Shops `;
+
+    }
+
+
+    componentDidUpdate() {
+        document.title = `Preferred Shops`;
+    } 
+
     render() {
         return (
             <Fragment>

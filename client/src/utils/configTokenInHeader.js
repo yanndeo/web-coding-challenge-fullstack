@@ -1,0 +1,20 @@
+import axios from 'axios';
+
+
+ const configTokenInHeader = (token)=>{
+
+    if(token){
+        axios.defaults.headers.common['x-auth-token'] = token;
+
+    }
+        
+    else{
+        delete axios.defaults.headers.common['x-auth-token'];
+
+    }
+
+};
+
+export default configTokenInHeader;
+
+ 

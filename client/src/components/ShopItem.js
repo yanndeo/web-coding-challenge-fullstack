@@ -5,9 +5,11 @@ const ShopItem = () => {
         <div className="col-sm-6 col-lg-3 mb-3" data-aos="fade-up">
 
             <div className="block-4 text-center border">
-            
+
                 <figure className="block-4-image">
-                    <Link href="#"><img src="images/cloth_1.jpg" alt="Image placeholder" className="img-fluid" /></Link>
+                    <Link to="#">
+                        <img src="images/cloth_1.jpg" alt="placeholder" className="img-fluid" />
+                    </Link>
                 </figure>
 
                 <div className="block-4-text p-4">

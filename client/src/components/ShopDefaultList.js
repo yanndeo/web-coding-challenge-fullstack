@@ -1,8 +1,27 @@
 import React, { Component, Fragment} from 'react'
 import ShopItem from './ShopItem';
 import SubNavbar from './layout/SubNavbar';
+import { Link } from 'react-router-dom';
 
-class ShopList extends Component {
+
+
+
+class ShopDefaultList extends Component {
+
+
+  componentDidMount() {
+    document.title = `Default Page`;
+
+  }
+
+
+  componentDidUpdate() {
+    document.title = `Default Page`;
+  } 
+
+
+
+
     render () {
         return (
           <Fragment>
@@ -36,13 +55,13 @@ class ShopList extends Component {
               <div className="col-md-12 text-center">
                 <div className="site-block-27">
                   <ul>
-                    <li><a href="#">&lt;</a></li>
+                    <li><Link to="#">&lt;</Link></li>
                     <li className="active"><span>1</span></li>
-                    <li><a href="#">2</a></li>
-                    <li><a href="#">3</a></li>
-                    <li><a href="#">4</a></li>
-                    <li><a href="#">5</a></li>
-                    <li><a href="#">&gt;</a></li>
+                    <li><Link to="#">2</Link></li>
+                    <li><Link to="#">3</Link></li>
+                    <li><Link to="#">4</Link></li>
+                    <li><Link to="#">5</Link></li>
+                    <li><Link to="#">&gt;</Link></li>
                   </ul>
                 </div>
               </div>
@@ -59,4 +78,4 @@ class ShopList extends Component {
     }
 }
 
-export default ShopList;
+export default ShopDefaultList;

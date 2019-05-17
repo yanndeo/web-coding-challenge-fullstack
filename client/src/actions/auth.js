@@ -1,0 +1,139 @@
+import axios from "axios";
+//Types
+import { REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_SUCCESS, LOGIN_FAIL, USER_LOADED, AUTH_ERROR, LOGOUT} from "./types";
+//Others actions
+import { _setAlert } from "./alert";
+
+//Utils
+import { API_URI } from "../utils/uri";
+import configTokenInHeader from "../utils/configTokenInHeader";
+
+
+
+/**
+ * LOAD User and update state with his informations
+ */
+export const _loadUser = ()=> async dispatch =>{
+
+    if(localStorage.token){
+        configTokenInHeader(localStorage.token);   //set header request
+    }
+
+    try {
+        const response = await axios.get(`${API_URI}/auth`);
+
+        dispatch({
+            type: USER_LOADED,
+            payload: response.data
+        });
+
+    } catch (error) {
+        dispatch({ type: AUTH_ERROR  });
+    }
+} ;
+
+
+
+/**
+ * REGISTER USER 
+ */
+export const _register = ({name, email, password  })=> async dispatch => {
+   
+    //1-Define it explicitly (like in postman environment)
+    const config = {
+        headers: {
+            'Content-Type' : 'application/json'
+        }
+    }
+
+    //2-Convert the JavaScript object to a JSON object
+    const userData = JSON.stringify({name, email, password});
+
+    try {
+        //3-Send request to node server 
+        let response = await axios.post(`${API_URI}/register`, userData, config );
+
+        //4-Dispatch action
+        dispatch({
+            type: REGISTER_SUCCESS,
+            payload: response.data  //srv return token
+        });
+
+        //5- load user connected
+        dispatch(_loadUser());
+
+        
+    } catch (error) {
+        const errors = error.response.data.errors;
+
+        if(errors){
+            for (const err of errors) {
+                dispatch( _setAlert( err.msg, 'danger'))  ; //We call the action directly
+            }
+        }
+
+        dispatch({
+            type:REGISTER_FAIL
+            //we don't need a payload
+        })
+        
+    }
+
+
+};
+
+
+
+
+
+
+
+/**
+ * LOGIN USER
+ */
+export const _login = ( email, password ) => async dispatch => {
+
+    const config = {
+        headers: {
+            'Content-Type': 'application/json'
+        }
+    };
+
+    const userData = JSON.stringify({ email, password });
+
+    try {
+        let response = await axios.post(`${API_URI}/login`, userData, config);
+
+        dispatch({
+            type: LOGIN_SUCCESS,
+            payload: response.data  
+        });
+
+        dispatch(_loadUser());
+
+    } catch (error) {
+
+      /*   const errors = error.response.data.errors;
+        if (errors) {
+            for (const err of errors) {
+                dispatch(_setAlert(err.msg, 'danger')); 
+            }
+
+        } */
+
+        dispatch({ type: LOGIN_FAIL })
+
+    }
+
+
+};
+
+/**
+ * LOGOUT 
+ */
+
+export const _logout = () => dispatch => {
+
+    dispatch({ type: LOGOUT })
+
+};

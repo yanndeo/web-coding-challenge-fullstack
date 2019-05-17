@@ -7,12 +7,12 @@ const authorization = require('../../middleware/authorization')
 
 /**
  * @api      GET  api/auth
- * @desc     User authentificate
+ * @desc     Return data of User authentificate.
  * @access   Private */
 router.get('/', authorization, async(req, res) => {
 
     try {
-        const user =  await User.findById(req.user.id).select('-password');
+        const user =  await User.findById(req.user.id).select('-password -updatedAt -__v');
        
        return res.status(200).json(user)
 
