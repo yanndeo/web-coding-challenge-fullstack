@@ -14,7 +14,7 @@ const fakerShopData = async () => {
 
         for (let i = 1; i <= config.get('faker_data_shop'); i++) {
 
-          let name = faker.company.companyName();
+          let name = faker.company.companyName(String,3);
           let street = faker.address.streetAddress();
           let city = faker.address.city();
           let zipcode = faker.address.zipCode();

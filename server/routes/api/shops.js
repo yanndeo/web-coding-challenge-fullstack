@@ -67,13 +67,13 @@ router.put('/like/:shopID',authorization, async(req, res) => {
 
 
         if(!shop)
-            return res.status(404).send({ msg:'Sorry Shop not found'});
+            return res.status(404).json({ msg:'Sorry Shop not found'});
 
         else{
               //Check if user has already 'like' this shop:
             if( shop.likes.filter(like=> like.user.toString() === req.user.id ).length > 0 )
                 
-                return res.status(400).json({ msg: 'Shop already liked' });
+                return res.status(409).json({ msg: `You already liked and added the "${shop.name}" shop to your favorites .` }); // 409 : conflict
 
             //Check if User disliked this shop before:
             if (shop.dislikes.filter(dislike => dislike.user.toString() === req.user.id).length > 0) {
@@ -162,14 +162,10 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
                 shop.dislikes.unshift({ user: req.user.id });
                 await shop.save();
                 return res.status(200).json(shop);
-
             }
-            
-            
         }
 
     } catch (error) {
-
         console.log("user_like_shop", error.message);
 
         if (error.king === "ObjectId") {
@@ -186,9 +182,6 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
 
 
 
-
-
-
 /**
  * @api      GET api/shops/preferred
  * @desc     Get list of shops preferred by user .
@@ -198,13 +191,18 @@ router.get('/preferred' , authorization, async(req, res)=>{
 
     try {
 
-        const shops_preferred = await Shop.shopsListPreferredByUser(req.user.id);
- 
-        return res.json(shops_preferred);
+        let shops_preferred = await Shop.shopsListPreferredByUser(req.user.id);
+
+        if( shops_preferred.length === 0) {
+           return res.status(404).send({ msg: "You still have nothing in your favorites ."});
+
+        }else{
+            return res.json(shops_preferred);
+        }
 
     } catch (error) {
         console.log("shop_preferred:", error.message);
-        res.status(500).send("Server Error");
+        return res.status(500).send("Server Error");
     }
 })
 
@@ -217,7 +215,7 @@ router.get('/preferred' , authorization, async(req, res)=>{
 
 /**
  * @api      GET api/shops/default
- * @desc     Get all shops without criteria(just for test from postman).
+ * @desc     Get all shops without criteria.
  * @access   Public 
  * */
 router.get('/default', async (req, res) => {
@@ -247,7 +245,7 @@ router.get('/:shopID', async (req, res) => {
         const shop = await Shop.getShopByID(req.params.shopID); ;
 
         if (!shop) {
-            return res.status(404).json({ msg: 'Shop not found' });
+            return res.status(404).json({ msg: 'Sorry Shop not found' });
         }
         return res.status(200).json(shop);
 
@@ -303,7 +301,6 @@ router.delete('/preferred/:shopID', authorization, async (req, res) => {
             }
 
 
-            
         }
 
            

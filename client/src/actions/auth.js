@@ -11,7 +11,7 @@ import configTokenInHeader from "../utils/configTokenInHeader";
 
 
 /**
- * LOAD User and update state with his informations
+ * LOAD USER and update state with his informations
  */
 export const _loadUser = ()=> async dispatch =>{
 
@@ -37,7 +37,7 @@ export const _loadUser = ()=> async dispatch =>{
 /**
  * REGISTER USER 
  */
-export const _register = ({name, email, password  })=> async dispatch => {
+export const _register = ({ name, email, password  })=> async dispatch => {
    
     //1-Define it explicitly (like in postman environment)
     const config = {
@@ -51,16 +51,18 @@ export const _register = ({name, email, password  })=> async dispatch => {
 
     try {
         //3-Send request to node server 
-        let response = await axios.post(`${API_URI}/register`, userData, config );
+        const response = await axios.post(`${API_URI}/register`, userData, config );
 
+      
         //4-Dispatch action
-        dispatch({
+       await dispatch({
             type: REGISTER_SUCCESS,
             payload: response.data  //srv return token
         });
 
         //5- load user connected
-        dispatch(_loadUser());
+       //await (_loadUser());
+       
 
         
     } catch (error) {
@@ -91,7 +93,7 @@ export const _register = ({name, email, password  })=> async dispatch => {
 /**
  * LOGIN USER
  */
-export const _login = ( email, password ) => async dispatch => {
+export const _login = ( email, password ) => async (dispatch) => {
 
     const config = {
         headers: {
@@ -102,24 +104,24 @@ export const _login = ( email, password ) => async dispatch => {
     const userData = JSON.stringify({ email, password });
 
     try {
-        let response = await axios.post(`${API_URI}/login`, userData, config);
+        const response = await axios.post(`${API_URI}/login`, userData, config);
 
         dispatch({
             type: LOGIN_SUCCESS,
             payload: response.data  
         });
 
-        dispatch(_loadUser());
+        //dispatch(_loadUser());
 
-    } catch (error) {
+    }catch(error){
 
-      /*   const errors = error.response.data.errors;
+        const errors = error.response.data.errors;
         if (errors) {
             for (const err of errors) {
                 dispatch(_setAlert(err.msg, 'danger')); 
             }
 
-        } */
+        } 
 
         dispatch({ type: LOGIN_FAIL })
 

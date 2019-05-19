@@ -40,7 +40,6 @@ export default function (state = initialState, action) {
                     ...payload,                      //token returned by server
                     isAuthentificated: true,
                     loading: false
-
                 };
 
         case REGISTER_FAIL:

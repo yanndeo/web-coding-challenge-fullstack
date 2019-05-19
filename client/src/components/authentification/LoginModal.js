@@ -12,7 +12,7 @@ import {
   Label,
   Input,
 } from "reactstrap";
-//Components
+//Component
 import AlertNotification from '../layout/AlertNotification';
 //Actions : _xxYYY
 import { _setIsOpen } from "../../actions/modal";
@@ -20,11 +20,12 @@ import { _login } from '../../actions/auth';
 
 
 
-const LoginModal = (props) => {
+const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
 
-   // const {isAuthentificated} = props;
 
-    //Hook: Definition of state : [state, setState ] =  useSate(initialize)
+    /**
+     * Hook: Definition of state : [state, setState ] =  useSate(initialize)
+     */
     const [formModalData, setFormModalData] = useState({
         email: '',
         password: '',
@@ -35,64 +36,78 @@ const LoginModal = (props) => {
     const { email, password } = formModalData;
 
 
-    //close modal : send action redux
+   /**
+    * close modal : 
+    * send action redux
+    */
     const toggle = () => {
-         props._setIsOpen()
+         _setIsOpen()
      };
 
 
-    //Maj state input fields text on change
+
+    /**
+     * Maj state input fields text on change
+     */
     const onChange = (e) => {
         setFormModalData({
-          ...formModalData,
-          [e.target.name]: e.target.value
+            ...formModalData,
+            [e.target.name]: e.target.value
         });
     };
 
 
-    //Call action redux to send request to "/api/login"
+
+    /**
+     * Call action redux to send request
+     * to "/api/login"
+     */
     const onSubmit = async (e) => {
         e.preventDefault();
-        console.log('UserLogin:',email, password)
-        props._login(email, password);
+        console.log('UserLogin:', email, password)
+        _login(email, password);
 
     }
 
 
-    //Redirect if logged in
-    if(props.isAuthentificated){
-        console.log('auth?: ', props.isAuthentificated)
 
-        return <Redirect to="/mainpage" />
+    /**
+     * Redirect if user logged in
+     */
+    if (isAuthentificated) {
+        return <Redirect to='/mainpage' />
+   };
+
+  
 
 
-    }
 
-    console.log('modal',props.isOpen)
+    console.log('modal', isOpen)
 
     return (
 
         <Fragment >
             <div  >
 
-                <Modal isOpen={props.isOpen} toggle={() => toggle()}  >
+                <Modal isOpen={ isOpen } toggle={() => toggle()} >
 
                     <ModalHeader toggle={()=>toggle()} >
-                          <span className="text-center"> SIGN IN </span>  
+                          <span className="text-center"> SIGN_IN </span>  
                     </ModalHeader>
 
                     <ModalBody>
 
                         { /** Connected to redux state global*/}
-                        <AlertNotification/>
+                        <AlertNotification />
 
-                        <Form onSubmit={e => onSubmit(e)} >
+                        <Form onSubmit={ e => onSubmit(e) } >
                             <FormGroup>
 
                                 <Label for="email">Email</Label>
                                 <Input
                                     type="email"
                                     name="email"
+                                    value={email}
                                     placeholder="Email"
                                     onChange={(e)=>onChange(e) }
                                 />
@@ -101,6 +116,7 @@ const LoginModal = (props) => {
                                 <Input
                                     type="password"
                                     name="password"
+                                    value={password}
                                     placeholder="Password"
                                     onChange={(e)=>onChange(e)}
                                 />
@@ -111,7 +127,6 @@ const LoginModal = (props) => {
                                 </Button>
 
                             </FormGroup>
-
                         </Form>
 
                         
@@ -126,8 +141,8 @@ const LoginModal = (props) => {
 }
 
 LoginModal.propTypes = {
-    _setIsOpen: PropTypes.func.isRequired,  //action
-    _login: PropTypes.func.isRequired,      //action
+    _setIsOpen: PropTypes.func.isRequired,     //action
+    _login: PropTypes.func.isRequired,        //action
     isAuthentificated: PropTypes.bool,       //piece of store
     isOpen:PropTypes.bool,                  //piece of store
 

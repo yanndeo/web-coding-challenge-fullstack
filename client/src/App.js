@@ -1,55 +1,60 @@
 import React,{ Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { Provider } from "react-redux";
-import store from './store/index';
-//Component
-import LoginModal from './components/authentification/LoginModal';
-//Actions
-import { _loadUser } from "./actions/auth";
+import { connect } from "react-redux";
+import PropTypes from "prop-types";
+
 //Utils
 import configTokenInHeader from "./utils/configTokenInHeader";
 import ErrorBoundary from "./utils/ErrorBoundary";
 //Routing
 import Routes from './routing/routes';
+//Component
+import LoginModal from './components/authentification/LoginModal';
+//Actions
+import { _loadUser } from "./actions/auth";
+import { _getMyPreferredShops } from './actions/shop';
 
 
 if (localStorage.token) {
-  configTokenInHeader(localStorage.token);
-
-}
-
-const App = () => {
+  configTokenInHeader(localStorage.token);}
 
 
-   // Hook react : componentDidUpdate/componentDidUpdate/componentWillUnmount
+
+const App = ({_loadUser}) => {
+
+
+  
   useEffect(()=>{
-    store.dispatch(_loadUser());
+    //_loadUser();
 
-  },[] ); //[]=> exécuter un effet une seule fois au montage puis au démontage.
 
+
+  },[]); //[]=> exécuter un effet une seule fois au montage puis au démontage.
  
-
+ 
   return (
-    <ErrorBoundary>
 
-      <Provider store={store}>
+    <ErrorBoundary>
         <Router>
-          <Fragment>  
+          <Fragment> 
 
             <Switch>
               <Route component={Routes} />
             </Switch>
-            
+
             <LoginModal />
 
           </Fragment>
         </Router>
-      </Provider>
-
     </ErrorBoundary>
+
   );
 }
 
+App.propTypes = {
+  _loadUser: PropTypes.func.isRequired, //action
+  _getMyPreferredShops: PropTypes.func.isRequired,
+};
 
-
-export default App;
+//export default App
+export default connect(null, { _loadUser, _getMyPreferredShops })(App);

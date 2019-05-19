@@ -21,7 +21,7 @@ export default function (state = initialState, action) {
 
         default:
             return nextState || state;
-
+ 
 
     }
 

@@ -1,23 +1,31 @@
-import React, { Fragment} from 'react'
+import React, { Fragment, useEffect } from "react";
 import { Link} from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 //Action: _xxYYYY
 import { _setIsOpen } from "../../actions/modal";
 import { _logout } from '../../actions/auth';
+import { _getMyPreferredShops } from "../../actions/shop";
 
 
 
-const Navbar = ({ auth: { isAuthentificated, loading } , _logout, _setIsOpen}) => {
+const Navbar = ({ auth: { isAuthentificated, loading }, _logout, _setIsOpen, shops_liked, _getMyPreferredShops }) => {
+
+    
+
+
 
 
     const guestLinks = (
 
          <ul>
             <li><Link to="/register">REGISTER</Link></li>
-
             <li><Link to="#" onClick={() => _setIsOpen()} >LOGIN</Link></li>
 
+            <Link to="/favorites-shop" className="site-cart">
+                <span className="icon icon-heart"></span>
+                <span className="count"> {shops_liked.length} </span>
+            </Link>
         </ul>
     );
 
@@ -30,12 +38,10 @@ const Navbar = ({ auth: { isAuthentificated, loading } , _logout, _setIsOpen}) =
                     <span className="icon icon-heart"></span>
                     <span className="count">2</span>
                 </Link>
+                <li><Link to="#">Name</Link></li>
+
             </li>
-            <li className="d-inline-block d-md-none ml-md-0">
-                <Link to="#" className="site-menu-toggle js-menu-toggle">
-                    <span className="icon-menu"></span>
-                </Link>
-            </li>
+          
         </ul>
 
     );
@@ -58,7 +64,9 @@ const Navbar = ({ auth: { isAuthentificated, loading } , _logout, _setIsOpen}) =
 
                             <div className="col-6 col-md-4 order-3 order-md-3 text-right">
                                 <div className="site-top-icons">
-                                    {!loading && (<Fragment> { isAuthentificated ? authLinks : guestLinks }</Fragment> )}
+                                    
+                                    {/* false && true  ?  name/logout : register/login */}
+                                    {!loading && isAuthentificated ? authLinks : guestLinks }
                                 </div>
                             </div>
                         </div>
@@ -75,12 +83,15 @@ const Navbar = ({ auth: { isAuthentificated, loading } , _logout, _setIsOpen}) =
 Navbar.propTypes = {
   _setIsOpen: PropTypes.func.isRequired,
   _logout: PropTypes.func.isRequired,
+  _getMyPreferredShops: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,     //piece of store
+  shops_liked: PropTypes.array,
 };
 
 
 
-const mapStateToProp = state =>({
-    auth :state.auth
-})
-export default connect(mapStateToProp, { _setIsOpen, _logout })(Navbar)
+const mapStateToProp = state => ({
+  auth: state.auth,
+  shops_liked: state.shop.preferred_shops,
+});
+export default connect(mapStateToProp, { _setIsOpen, _logout, _getMyPreferredShops  })(Navbar)

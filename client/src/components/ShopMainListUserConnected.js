@@ -1,30 +1,21 @@
-import React, { Component, Fragment } from 'react'
+import React, {useEffect, Fragment } from 'react'
+import { connect } from "react-redux";
+//Component
 import ShopItem from './ShopItem';
 import SubNavbar from './layout/SubNavbar';
-import { Link } from 'react-router-dom';
+//Actions
+import { _loadUser } from '../actions/auth';
 
 
+const ShopMainListUserConnected= ({}) => {
+
+    useEffect(() => {
+      _loadUser({});
+    }, []);
 
 
-class ShopMainListUserConnected extends Component {
-
-
-
-
-    componentDidMount() {
-        document.title = `Main Page`;
-
-    }
-
-
-    componentDidUpdate() {
-        document.title = `Main Page`;
-    } 
-
-    render() {
-        return (
-            <Fragment>
-                <SubNavbar />
+    return (
+       <Fragment>
 
                 <div className="site-section">
                     <div className="container">
@@ -34,9 +25,7 @@ class ShopMainListUserConnected extends Component {
                         <div className="row">
                             <div className="row col-md-12 ">
 
-                                <ShopItem />
-                                <ShopItem />
-                                <ShopItem />
+                                All Shop Item when user  been connected
                         
                             </div>
 
@@ -45,8 +34,7 @@ class ShopMainListUserConnected extends Component {
                     </div>
                 </div>
             </Fragment>
-        )
-    }
+    );
 }
 
-export default ShopMainListUserConnected;
+export default connect(null, {_loadUser})(ShopMainListUserConnected)

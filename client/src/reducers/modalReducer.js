@@ -8,12 +8,9 @@ export default function (state = initialState, action) {
     switch (action.type) {
 
         case TOGGLE_MODAL:
-
             return nextState = {
                 ...state,
                 isOpen: !state.isOpen }
-
-
         default:
             return nextState || state;
 

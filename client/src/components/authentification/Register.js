@@ -3,7 +3,7 @@ import { Link ,Redirect } from 'react-router-dom'
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 //Components
-import Alert from '../layout/AlertNotification';
+import AlertNotification from "../layout/AlertNotification";
 //Actions : _xxYYY
 import { _setAlert } from '../../actions/alert';
 import { _register } from '../../actions/auth';
@@ -168,7 +168,7 @@ const Register = (props)=>{
 
             <div className="col-md-6" >
                 <br /><br />
-                <Alert/>
+                    <AlertNotification/>
             </div>
 
         </div>
@@ -182,17 +182,16 @@ const Register = (props)=>{
 
 Register.propTypes = {
     _setAlert: PropTypes.func.isRequired,
-    _setIsOpen:PropTypes.bool,
+    _setIsOpen:PropTypes.func.isRequired,
     _register: PropTypes.func.isRequired,
     isAuthentificate: PropTypes.bool,
 
 
 }
 
-/// mappons le state dans les props du component
+// mappons le state dans les props du component
 const mapStateToProps = state => ({
     isAuthentificate: state.auth.isAuthentificate,
-
 });
 
-export default connect(mapStateToProps, { _setAlert, _register,_setIsOpen })(Register)
+export default connect( mapStateToProps, { _setAlert, _register, _setIsOpen })(Register)
