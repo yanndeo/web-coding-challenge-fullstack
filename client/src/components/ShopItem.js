@@ -1,26 +1,19 @@
-import React, {Fragment, useEffect} from 'react'
+import React, {Fragment} from 'react'
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from "prop-types";
-//Actions
-import { _setAlert } from '../actions/alert';
-import { _likeShop } from '../actions/shop';
 
 
 
-const ShopItem = (props) => {
 
-    const { shop, preferred, handleLikeCallback } = props
-
-
-    
+const ShopItem = ({ shop, preferred, handleLikeCallback, handleUnLikeCallback, handleRemoveCallback }) => {
 
     const renderButton = ()=>{
         if(preferred){
             //& nbsp;& nbsp;
             return (
                 <Fragment>
-                    <button type="button" className="btn btn-danger btn-sm" >Remove</button> 
+                    <button type="button" className="btn btn-danger btn-sm" onClick={(e) => handleRemoveCallback(e, shop._id)} > Remove</button> 
                      &nbsp;&nbsp;
                 </Fragment>
              )
@@ -28,7 +21,7 @@ const ShopItem = (props) => {
         }else{
             return( 
                 <Fragment>
-                    <button type="button" className="btn btn-danger btn-sm" >Dislike</button>&nbsp;&nbsp;
+                    <button type="button" className="btn btn-danger btn-sm" onClick={(e) => handleUnLikeCallback(e, shop._id)} >Dislike</button>&nbsp;&nbsp;
                     <button type="button" className="btn btn-primary btn-sm" onClick={(e) => handleLikeCallback(e, shop._id)} >Like</button>
                 </Fragment>
             )
@@ -48,8 +41,9 @@ const ShopItem = (props) => {
                 </figure>
 
                 <div className="block-4-text p-4">
-                    <h6><a href="shop-single.html">{shop.name}</a></h6>
+                    <h6><Link to="#">{shop.name}</Link></h6>
                     <br/>
+                    
                     {renderButton()}
                    
                 </div>

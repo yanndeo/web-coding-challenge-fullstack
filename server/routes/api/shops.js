@@ -26,7 +26,7 @@ router.get('/', authorization, async (req, res) => {
                                 .sort({ name: 1 })
                                 .select("-__v");
 
-        return res.json(shops.length);
+        return res.json(shops);
 
     } catch (error) {
         console.error('get_all_shops_error:', error.message);
@@ -129,7 +129,6 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
 
     try {
 
-        //let shop = await Shop.findById(req.params.shopID).select('-__v');
         let shop = await Shop.getShopByID(req.params.shopID);
 
 
@@ -140,7 +139,8 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
 
             //Check if user has already 'dislike' this shop:
             if (shop.dislikes.filter(dislike => dislike.user.toString() === req.user.id).length > 0) {
-                return res.status(400).json({ msg: 'Shop already disliked' });
+                return res.status(409).json({ msg: `You already disliked the "${shop.name}" shop .` }); // 409 : conflict
+
             }
 
             //Check if User liked this shop before:
@@ -273,6 +273,7 @@ router.get('/:shopID', async (req, res) => {
  * */
 router.delete('/preferred/:shopID', authorization, async (req, res) => {
 
+    //middleware authorization give me 'user connected'
     try {
         
         //Make sure shop exist:
@@ -293,7 +294,7 @@ router.delete('/preferred/:shopID', authorization, async (req, res) => {
 
                 //save
                 await shop.save();
-                return res.status(200).json({ msg: "shop removed from list ." });
+                return res.status(200).json({ msg: `shop ${shop.name} removed from list .` });
             }
             else{
                 return res.status(400).json({ msg: "this shop does not appear in your list . " });

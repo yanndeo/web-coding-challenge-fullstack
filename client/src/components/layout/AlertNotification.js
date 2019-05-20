@@ -10,9 +10,10 @@ const AlertNotification = ({ alerts }) => {
        if (alerts !== null && alerts.length > 0) {
            
           return alerts.map(alert => (
-                    <Alert key={alert.id} color={alert.alertType}>
+              
+              <Alert key={alert.id} color={alert.alertType}> 
                             {alert.msg}
-                    </Alert>
+              </Alert>
           ));
 
        }else{

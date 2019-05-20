@@ -53,8 +53,8 @@ const App = ({_loadUser}) => {
 
 App.propTypes = {
   _loadUser: PropTypes.func.isRequired, //action
-  _getMyPreferredShops: PropTypes.func.isRequired,
+ // _getMyPreferredShops: PropTypes.func.isRequired,
 };
 
 //export default App
-export default connect(null, { _loadUser, _getMyPreferredShops })(App);
+export default connect(null, { _loadUser })(App);

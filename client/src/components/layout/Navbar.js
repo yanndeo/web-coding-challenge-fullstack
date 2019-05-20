@@ -12,8 +12,13 @@ import { _getMyPreferredShops } from "../../actions/shop";
 const Navbar = ({ auth: { isAuthentificated, loading }, _logout, _setIsOpen, shops_liked, _getMyPreferredShops }) => {
 
     
-
-
+    /**
+     * Hook React
+     * Init shop_list lengthh
+     */
+    useEffect(() => {
+      _getMyPreferredShops();   
+    }, []);
 
 
     const guestLinks = (

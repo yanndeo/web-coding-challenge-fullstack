@@ -7,15 +7,16 @@ import ShopItem from "./ShopItem";
 import AlertNotification from "./layout/AlertNotification";
 //Actions
 import { _setAlert } from '../actions/alert';
-import { _getMyPreferredShops } from "../actions/shop";
+import { _getMyPreferredShops, _removeShop } from "../actions/shop";
+import SpinnerLoader from './layout/SpinnerLoader';
 
 
 
-const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops,errors }) => {
+const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops, _removeShop, status, errors }) => {
 
     /**
      * Hook React 
-     * Define lifecycle component() and
+     * Define lifecycle component() 
      */
     useEffect(() => {
 
@@ -23,71 +24,78 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops,err
         document.title = `Preferred Shop`;
 
         //Load default data shop list
-        _getMyPreferredShops();
+            _getMyPreferredShops();
 
         console.log('mvmt')
 
+    }, []) 
+
+
+
+    /**
+     * Second hook to handle 
+     * remove actions
+     */
+    useEffect(() => {
+
       
 
-    }, []) //=> specify just for mount and unmount()
+        if (status.status === 200) {
+            _setAlert(status.msg, "success");
+
+        }
+
+        if (status.msg !== null && status.status === 400) {
+            _setAlert(status.msg, "dark");
+        }
+
+        if (status.msg !== null && status.status === 404) {
+            _setAlert(status.msg, "danger");
+
+        }
+        if (status.msg !== null && status.status === 500 ) {
+            _setAlert('Echec', "danger");
+
+        }
+
+    }, [status]); 
 
 
 
+    /**
+    * Remove A SHOP from prefrerred list
+    */
+    const handleRemoveShopFromPreferredList = (e, id) => {
+        e.preventDefault();
+        console.log(id)
+        _removeShop(id);
 
+
+
+    };
 
     /**
      * Define () that return shops list nearby of user
      * from store 
      */
     const renderShopList = () => {
-        return shops.map((shop, id) => {
-            return <ShopItem 
-                    key={id} 
-                    shop={shop} 
-                    preferred={true}
-                     />
 
-        })    
-    };
-
-    /**
-     * Make a spinner for loading store is true
-     */
-    const renderSpinner = () => {
-        return (<div style={{ marginLeft: 473, }}>
-            <img src="/images/spinner.gif" alt="spinner" />
-        </div>)
-    }
-
-
-
-
-
-
-
-    /**
-     * Handle content 
-     * if shop is empty or not
-     * it loading is true or false
-     * component required be connected
-     */
-
-    const renderContent = ()=>{
-
-        if(!loading){
-
-            if (shops === null ) {
-                 return _setAlert(errors.msg, 'primary');
-
-            }else{
-                return renderShopList()
-            }
+        if(shops === null){
+             _setAlert(errors.msg, 'primary');
 
         }else{
-            renderSpinner()
+            return shops.map((shop, id) => {
+                return <ShopItem
+                    key={id}
+                    shop={shop}
+                    preferred={true}
+                    handleRemoveCallback={handleRemoveShopFromPreferredList}
+                />
+
+            })  
         }
        
-    }
+    };
 
 
 
@@ -103,7 +111,9 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops,err
                     <div className="row">
 
                         <div className="row col-md-12 ">
-                            { renderContent() }
+
+                            { !loading ? renderShopList() : <SpinnerLoader/> }
+
                         </div>
 
                     </div>
@@ -117,6 +127,7 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops,err
 ShopListPreferred.propTypes = {
     _setAlert: PropTypes.func.isRequired,
     _getMyPreferredShops: PropTypes.func.isRequired,
+    _removeShop: PropTypes.func,
     shops: PropTypes.array,
     loading: PropTypes.bool,
     errors:PropTypes.object,
@@ -131,8 +142,8 @@ const mapStateToProps = state => ({
   shops: state.shop.preferred_shops,
   loading: state.shop.loading,
   errors: state.shop.errors,
-  sAuthentificated: state.auth.isAuthentificated, 
+  //isAuthentificated: state.auth.isAuthentificated, //user already authentificated with private route
   status: state.shop.status
 });
 
-export default connect(mapStateToProps, { _getMyPreferredShops, _setAlert })(ShopListPreferred);
+export default connect(mapStateToProps, { _getMyPreferredShops, _setAlert,_removeShop })(ShopListPreferred);

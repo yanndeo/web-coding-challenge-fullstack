@@ -62,7 +62,7 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
      * Call action redux to send request
      * to "/api/login"
      */
-    const onSubmit = async (e) => {
+    const onSubmit =  (e) => {
         e.preventDefault();
         console.log('UserLogin:', email, password)
         _login(email, password);
