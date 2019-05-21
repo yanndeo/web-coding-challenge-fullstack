@@ -2,7 +2,6 @@ import React,{ Fragment, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
-
 //Utils
 import configTokenInHeader from "./utils/configTokenInHeader";
 import ErrorBoundary from "./utils/ErrorBoundary";
@@ -12,11 +11,11 @@ import Routes from './routing/routes';
 import LoginModal from './components/authentification/LoginModal';
 //Actions
 import { _loadUser } from "./actions/auth";
-import { _getMyPreferredShops } from './actions/shop';
 
 
 if (localStorage.token) {
-  configTokenInHeader(localStorage.token);}
+  configTokenInHeader(localStorage.token);
+}
 
 
 
@@ -25,9 +24,8 @@ const App = ({_loadUser}) => {
 
   
   useEffect(()=>{
-    //_loadUser();
-
-
+    
+    _loadUser();
 
   },[]); //[]=> exécuter un effet une seule fois au montage puis au démontage.
  
@@ -53,7 +51,6 @@ const App = ({_loadUser}) => {
 
 App.propTypes = {
   _loadUser: PropTypes.func.isRequired, //action
- // _getMyPreferredShops: PropTypes.func.isRequired,
 };
 
 //export default App

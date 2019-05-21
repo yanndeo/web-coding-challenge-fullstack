@@ -68,7 +68,24 @@ contact_information:{
 
 ShopSchema.index({location: "2dsphere" });
 
+/* ****************************************************** METHODS *********************************** */
 
+/**
+ * STATIC METHOD: 
+ * Return Main shops list .Without the shops already liked. 
+ */
+ShopSchema.statics.shopsMainListWithoutShopsLiked = async function (userID) {
+    try {
+           return await Shop.find()
+                            .where('likes.user').ne(userID)
+                            .where('dislikes.user').ne(userID)
+                            .sort({ 'location.coordinates': -1 }) // ??: A revoir
+                            .select("-__v");
+    } catch (error) {
+        console.error("shop_main_list_method:", error.message);
+        res.status(500).send("Server Error");
+    }
+};
 
 
 /**
@@ -90,12 +107,11 @@ ShopSchema.statics.shopsListPreferredByUser = async function(userID) {
 
 /**
  * STATIC METHOD: 
- * Return Shops that user liked
+ * Return one Shop
  */
 ShopSchema.statics.getShopByID = async function(shopID) {
 
     try {
-        console.log(shopID)
         return await Shop.findById(shopID)
                          .select("-__v");
 

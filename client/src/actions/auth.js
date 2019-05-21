@@ -5,32 +5,10 @@ import { REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_SUCCESS, LOGIN_FAIL, USER_LOADED
 import { _setAlert } from "./alert";
 
 //Utils
-import { API_URI } from "../utils/uri";
+import { API_URI } from "../utils/constantsValues";
 import configTokenInHeader from "../utils/configTokenInHeader";
 
 
-
-/**
- * LOAD USER and update state with his informations
- */
-export const _loadUser = ()=> async dispatch =>{
-
-    if(localStorage.token){
-        configTokenInHeader(localStorage.token);   //set header request
-    }
-
-    try {
-        const response = await axios.get(`${API_URI}/auth`);
-
-        dispatch({
-            type: USER_LOADED,
-            payload: response.data
-        });
-
-    } catch (error) {
-        dispatch({ type: AUTH_ERROR  });
-    }
-} ;
 
 
 
@@ -55,7 +33,7 @@ export const _register = ({ name, email, password  })=> async dispatch => {
 
       
         //4-Dispatch action
-       await dispatch({
+        dispatch({
             type: REGISTER_SUCCESS,
             payload: response.data  //srv return token
         });
@@ -64,7 +42,6 @@ export const _register = ({ name, email, password  })=> async dispatch => {
        //await (_loadUser());
        
 
-        
     } catch (error) {
         const errors = error.response.data.errors;
 
@@ -106,12 +83,12 @@ export const _login = ( email, password ) => async (dispatch) => {
     try {
         const response = await axios.post(`${API_URI}/login`, userData, config);
 
-        dispatch({
+         dispatch({
             type: LOGIN_SUCCESS,
             payload: response.data  
         });
 
-        //dispatch(_loadUser());
+        dispatch(_loadUser());
 
     }catch(error){
 
@@ -138,4 +115,26 @@ export const _logout = () => dispatch => {
 
     dispatch({ type: LOGOUT })
 
+};
+
+
+
+
+/**
+ * LOAD USER and update state with his informations
+ */
+export const _loadUser = () => async (dispatch) => {
+
+    if (localStorage.token) {
+        configTokenInHeader(localStorage.token);   //set header request
+    }
+
+    try {
+        const response = await axios.get(`${API_URI}/auth`);
+
+        dispatch({type: USER_LOADED, payload: response.data });
+
+    } catch (error) {
+        dispatch({ type: AUTH_ERROR });
+    }
 };

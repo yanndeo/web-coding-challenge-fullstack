@@ -1,3 +1,4 @@
+
 const  express = require("express"),
        connectDatabase = require('./config/db'),
        fakerShopData = require('./seeds/fakerData'),
@@ -20,7 +21,7 @@ app.get('/', (req, res) => { res.send('API Running') });
  app.use('/api/auth', require('./routes/api/auth'));
 
 
-//Generate data shops if database is empty
+//Generate data shops IF database is empty
 fakerShopData();
 
 // Define port listen & start server

@@ -1,6 +1,16 @@
+/**
+ * Types of Modal and Action.
+ */
+
 //Alert
 export const SET_ALERT = 'SET_ALERT';
 export const REMOVE_ALERT = "REMOVE_ALERT";
+//Modal
+export const TOGGLE_MODAL = 'TOGGLE_MODAL';
+
+/**
+ * Types for User authentification.
+ */
 //Register
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const REGISTER_FAIL = 'REGISTER_FAIL';
@@ -12,11 +22,10 @@ export const LOGOUT = 'LOGOUT';
 //Auth
 export const USER_LOADED = 'USER_LOADED';
 export const AUTH_ERROR = 'AUTH_ERROR';
-//Modal
-export const TOGGLE_MODAL = 'TOGGLE_MODAL';
+
 
 /**
- * Types for Shop
+ * Types for Shop.
  */
 export const SUCCESS_OR_ERROR_SHOPS = "SUCCESS_OR_ERROR_SHOPS";
 //Default List shops
@@ -26,7 +35,8 @@ export const GET_MAIN_SHOPS_LIST = "GET_MAIN_SHOPS_LIST";
 //Preference User
 export const GET_PREFERRED_SHOPS = 'GET_PREFERRED_SHOPS';
 export const REMOVE_SHOPS_USER_RELATED = 'REMOVE_SHOPS_USER_RELATED';
-//Nearby Shop (of user)
-export const GET_NEARBY_SHOPS = 'GET_NEARBY_SHOPS';
+//Hide and Show Shop 
+export const REMOVE_DISLIKE_OF_USER = "REMOVE_DISLIKE_OF_USER";
+
 
 

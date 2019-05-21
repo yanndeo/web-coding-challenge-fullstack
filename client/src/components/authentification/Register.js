@@ -11,11 +11,8 @@ import { _setIsOpen } from '../../actions/modal';
 
 
 
-const Register = (props)=>{
+const Register = ({ _setAlert, _register, _setIsOpen, isAuthentificate})=>{
 
-    const { isAuthentificate } = props;
-
-  
 
     //Definition du state : Hook[state, setState ] =  useSate(initialize)
     const [formData, setFormData] = useState({
@@ -47,11 +44,11 @@ const Register = (props)=>{
     
         //Check matching password
         if (password !== password2) {
-            props._setAlert('Passwords do not match', 'danger'); //call action redux
+            _setAlert('Passwords do not match', 'danger'); //call action redux
             console.log('Register','password no correspondance');
 
         } else {
-            props._register({ name, email, password }); //call action redux
+            _register({ name, email, password }); //call action redux
             console.log('Register', formData);
 
         }
@@ -158,7 +155,7 @@ const Register = (props)=>{
 
 
                     <p className="my-1">
-                        Already have an account? <Link to="#" onClick={()=>props._setIsOpen()} >Sign In</Link>
+                        Already have an account? <Link to="#" onClick={ ()=>_setIsOpen() } >Sign In</Link>
                     </p>
                 </div>
                 

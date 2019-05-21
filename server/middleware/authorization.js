@@ -1,6 +1,7 @@
 
 const jwt =  require('jsonwebtoken');
 const config = require('config');
+const User = require('../models/User');
 
 module.exports =  function(req, res, next){
 
@@ -20,8 +21,9 @@ module.exports =  function(req, res, next){
               console.log('decode: ',decode); // object
 
               req.user = decode.user;
-
+            
               next();
+
             } catch (error) {
 
             console.log("middleware_token_verify:", error.message);

@@ -9,47 +9,63 @@ import { _getMyPreferredShops } from "../../actions/shop";
 
 
 
-const Navbar = ({ auth: { isAuthentificated, loading }, _logout, _setIsOpen, shops_liked, _getMyPreferredShops }) => {
+const Navbar = ({ auth: { isAuthentificated, loading ,user}, _logout, _setIsOpen, shops_liked, _getMyPreferredShops }) => {
 
     
     /**
      * Hook React
-     * Init shop_list lengthh
+     * Init shop_list length
      */
     useEffect(() => {
-      _getMyPreferredShops();   
+
+      _getMyPreferredShops(); 
+
     }, []);
 
 
+
+
+
+    /**
+     * Appearance of menu 
+     * if user is connected or not.
+     */
     const guestLinks = (
+      <ul>
+        <li>
+          <Link to="/register">REGISTER</Link>
+        </li>
+        <li>
+          <Link to="#" onClick={() => _setIsOpen()}>
+            LOGIN
+          </Link>
+        </li>
 
-         <ul>
-            <li><Link to="/register">REGISTER</Link></li>
-            <li><Link to="#" onClick={() => _setIsOpen()} >LOGIN</Link></li>
-
-            <Link to="/favorites-shop" className="site-cart">
-                <span className="icon icon-heart"></span>
-                <span className="count"> {shops_liked.length} </span>
-            </Link>
-        </ul>
+   
+      </ul>
     );
 
     const authLinks = (
 
         <ul>
-            <li><Link to="#" onClick={() => _logout()} >LOGOUT</Link></li>
+            <li><Link to="#">{!user ? null : user.name  }</Link></li>
+            <li><Link to="#" onClick={ () => _logout() } >LOGOUT</Link></li>
             <li>
                 <Link to="/favorites-shop" className="site-cart">
                     <span className="icon icon-heart"></span>
-                    <span className="count">2</span>
+                    <span className="count"> {shops_liked.length} </span>
                 </Link>
-                <li><Link to="#">Name</Link></li>
-
             </li>
+
           
         </ul>
 
     );
+
+
+
+
+
 
     return (
         <Fragment>
@@ -63,7 +79,7 @@ const Navbar = ({ auth: { isAuthentificated, loading }, _logout, _setIsOpen, sho
 
                             <div className="col-12 mb-3 mb-md-0 col-md-4 order-1 order-md-2 text-center">
                                 <div className="site-logo">
-                                    <Link to="/" className="js-logo-clone">Mern Stack</Link>
+                                    <Link to="/default-page" className="js-logo-clone">Mern Stack</Link>
                                 </div>
                             </div>
 

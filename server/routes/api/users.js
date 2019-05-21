@@ -39,7 +39,7 @@ router.post('/register', checked.userRegisterValidate, async(req, res)=>{
                 //instance model
                 user = new User({ name,email,password });
 
-                //Encrypt paassword ::User Model
+                //Encrypt paassword ::(in User Model)
 
                 //Save user
                 await user.save();
@@ -48,8 +48,6 @@ router.post('/register', checked.userRegisterValidate, async(req, res)=>{
                  const token = await User.generateWebToken(user.id);
                 return res.status(201).json({ token })
             }
-                
-
             
     } catch (error) {
         console.error('register_user_error', error.message);

@@ -13,23 +13,21 @@ const Shop =  require('../../models/Shop');
 
 /**
  * @api      GET api/shops
- * @desc     Get all shops :main list
+ * @desc     Get all shops 
+ * @desc     Main list without shops already liked
+ * @desc     And sorted by distance
  * @access   Private 
  * */
 router.get('/', authorization, async (req, res) => {
 
     try {
 
-        const shops = await Shop.find()
-                                .where("likes.user")
-                                .ne(req.user.id)
-                                .sort({ name: 1 })
-                                .select("-__v");
+        let shops = await Shop.shopsMainListWithoutShopsLiked(req.user.id);
 
         return res.json(shops);
 
     } catch (error) {
-        console.error('get_all_shops_error:', error.message);
+        console.error('get_all_main_shops_error:', error.message);
         return res.status(500).send('Server error')
     }
 });
@@ -38,14 +36,50 @@ router.get('/', authorization, async (req, res) => {
 
 
 
+
 /**
- * @api      GET api/shops/:distance
- * @desc     Get list of shops sorted by distance.
+ * @api      GET api/shops/preferred
+ * @desc     Get list of shops preferred by user .
  * @access   Private 
  * */
-router.get('/distance/:distance', authorization, async (req, res) => {
+router.get('/preferred', authorization, async (req, res) => {
 
-   
+    try {
+
+        let shops_preferred = await Shop.shopsListPreferredByUser(req.user.id);
+
+        if (shops_preferred.length === 0) {
+            return res.status(404).send({ msg: "You still have nothing in your favorites ." });
+
+        } else {
+            return res.json(shops_preferred);
+        }
+
+    } catch (error) {
+        console.log("shop_preferred:", error.message);
+        return res.status(500).send("Server Error");
+    }
+})
+
+
+
+
+
+/**
+ * @api      GET api/shops/default
+ * @desc     Get all shops without criteria.
+ * @access   Public 
+ * */
+router.get('/default', async (req, res) => {
+    try {
+        const shops = await Shop.find().sort({ name: 1 }).select("-__v");
+
+        return res.json(shops);
+
+    } catch (error) {
+        console.error("get_allshops_error", error.message);
+        return res.status(500).send("Server error");
+    }
 });
 
 
@@ -131,7 +165,6 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
 
         let shop = await Shop.getShopByID(req.params.shopID);
 
-
         if (!shop)
             return res.status(404).send({ msg: 'Sorry Shop not found' });
 
@@ -146,11 +179,11 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
             //Check if User liked this shop before:
             if (shop.likes.filter(like => like.user.toString() === req.user.id).length > 0) {
 
-                //Delete his like
+                //Delete his like :we can't have in same shop 'like' and 'dislike' of a same user 
                 const removeIndex = shop.likes.map(like => like.user.toString()).indexOf(req.user.id);
                 shop.likes.splice(removeIndex, 1);
 
-                //And add his dislike
+                //And add his 'unlike'
                 shop.dislikes.unshift({ user: req.user.id });
                 await shop.save();
                 return res.status(200).json(shop);
@@ -178,58 +211,52 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
 
 
 
-
-
-
-
 /**
- * @api      GET api/shops/preferred
- * @desc     Get list of shops preferred by user .
+ * @api      Put api/shops/remove/dislike/:shopID
+ * @desc     Remove dislike  on shop of user 'without like'this shop
+ * @desc     This shop will be displayed next, in the main list.
  * @access   Private 
  * */
-router.get('/preferred' , authorization, async(req, res)=>{
+
+router.put('/remove/dislike/:shopID', authorization, async (req, res) => {
+
 
     try {
 
-        let shops_preferred = await Shop.shopsListPreferredByUser(req.user.id);
+        let shop = await Shop.getShopByID(req.params.shopID);
 
-        if( shops_preferred.length === 0) {
-           return res.status(404).send({ msg: "You still have nothing in your favorites ."});
+        if (!shop)
+            return res.status(404).send({ msg: 'Sorry Shop not found' });
 
-        }else{
-            return res.json(shops_preferred);
+        else {
+
+            //Check if user has dislike this shop
+            if (shop.dislikes.filter(dislike => dislike.user.toString() === req.user.id).length > 0) {
+
+                //Remove it : 
+                const removeIndex = shop.dislikes.map(dislike => dislike.user.toString()).indexOf(req.user.id);
+                shop.dislikes.splice(removeIndex, 1);
+
+                //And save the shop without added like
+                await shop.save();
+                return res.status(200).json(shop);
+
+            }else{
+                res.status(404).send({ msg: "Sorry Not found" });
+
+            }
         }
 
     } catch (error) {
-        console.log("shop_preferred:", error.message);
-        return res.status(500).send("Server Error");
+        console.log("remove_dislike_shop", error.message);
+
+        if (error.king === "ObjectId") {
+            res.status(404).send({ msg: "Sorry Shop not found" });
+        }
+        res.status(500).send("Server Error");
     }
-})
 
-
-
-
-
-
-
-
-/**
- * @api      GET api/shops/default
- * @desc     Get all shops without criteria.
- * @access   Public 
- * */
-router.get('/default', async (req, res) => {
-    try {
-        const shops = await Shop.find().sort({ name: 1 }).select("-__v");
-
-        return res.json(shops);
-
-    } catch (error) {
-        console.error("get_allshops_error", error.message);
-        return res.status(500).send("Server error");
-    }
 });
-
 
 
 
@@ -294,13 +321,12 @@ router.delete('/preferred/:shopID', authorization, async (req, res) => {
 
                 //save
                 await shop.save();
-                return res.status(200).json({ msg: `shop ${shop.name} removed from list .` });
+                return res.status(200).json({ msg: ` " ${shop.name} " shop removed from list .` });
             }
             else{
                 return res.status(400).json({ msg: "this shop does not appear in your list . " });
 
             }
-
 
         }
 
@@ -316,3 +342,14 @@ router.delete('/preferred/:shopID', authorization, async (req, res) => {
 
 
 module.exports = router;
+
+
+
+
+
+
+/**
+ * shop.likes.map(like => like.user.toString()).indexOf(req.user.id)
+ * map()=>give me a table containing all the users who liked this shop.
+ * indexOf()=> and check if the logged-in user is inside this table[].
+ */

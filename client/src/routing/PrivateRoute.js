@@ -9,17 +9,22 @@ import { _setAlert } from '../actions/alert';
  * 
  * Define HOC component to handle private routes
  */
-const PrivateRoute = ({ component: Component, auth , ...rest }) => (
+const PrivateRoute = ({
+      component: Component,
+      auth: { isAuthentificated, loading }, 
+      ...rest }) => (
+
 
     <Route 
         {...rest} 
             render={ 
-                props => !props.isAuthentificated && !props.loading
+                props => !isAuthentificated && !loading
                  ?
                     (
                     <Redirect
+                        back
                         to={{
-                            pathname: '/',
+                            pathname: '/default-page',
                             attempt: true  
                         }}
                     /> 
@@ -29,7 +34,11 @@ const PrivateRoute = ({ component: Component, auth , ...rest }) => (
                 
                  }
      />
+
+
 );
+
+
 
 //Required auth 
 PrivateRoute.propTypes = {

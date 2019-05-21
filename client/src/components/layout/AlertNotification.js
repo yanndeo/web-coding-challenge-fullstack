@@ -11,17 +11,14 @@ const AlertNotification = ({ alerts }) => {
            
           return alerts.map(alert => (
               
-              <Alert key={alert.id} color={alert.alertType}> 
+              <Alert key={alert.id} color={alert.alertType} > 
                             {alert.msg}
               </Alert>
           ));
 
        }else{
            return null
-       }
-   
-    
-   
+       }   
 }
 
 
@@ -29,7 +26,7 @@ Alert.propTypes = {
     alerts: PropTypes.array
 }
 
-//1- mappons le state dans les props et appelons le alerts
+//1- mappons le state dans les props 
 
 const mapStateToProps = state => ({
     alerts: state.alert

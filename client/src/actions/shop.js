@@ -3,15 +3,12 @@ import {
   GET_DEFAULT_SHOPS_LIST,
   GET_MAIN_SHOPS_LIST,
   GET_PREFERRED_SHOPS,
-  GET_NEARBY_SHOPS,
-  REMOVE_SHOPS_USER_RELATED,
+  //REMOVE_DISLIKE_OF_USER,
   SUCCESS_OR_ERROR_SHOPS
 } from "./types";
 //Utils
-import { API_URI } from '../utils/uri';
+import { API_URI, TIME_OUT } from '../utils/constantsValues';
 import configTokenInHeader from "../utils/configTokenInHeader";
-
-//Ohers actions
 
 
 
@@ -48,7 +45,7 @@ export const _getDefaultShopList = () => async dispatch => {
 /**
  * Main Shops List
  * List without the shops already liked.
- * "liked shops shouldn’t be displayed on the main page"
+ * NB:"liked shops shouldn’t be displayed on the main page"
  */
 export const _getMainShopList = () => async dispatch => {
 
@@ -112,6 +109,39 @@ export const _getMyPreferredShops = () => async dispatch => {
 
 };
 
+/**
+ * Remove 'dislike' of user.
+ * NB: " it won’t be displayed within “Nearby Shops” list during the next 2 hours"
+ * when dislike it remove, shop reappears in main list of user
+ */
+export const _removeDislikeUser=(shopID) =>  async dispatch =>{
+    
+
+    if (localStorage.token) {
+        configTokenInHeader(localStorage.token);   
+    }
+
+    try {
+        await axios.put(`${API_URI}/shops/remove/dislike/${shopID}`);
+
+        dispatch(_getMainShopList()) //updated list of all components connected in this state redux
+
+
+    } catch (error) {
+        console.log(error);
+
+        dispatch({
+            type: SUCCESS_OR_ERROR_SHOPS,
+            payload: { msg: error.response.data.msg, status: error.response.status }
+        });
+
+    };
+    
+}
+
+
+
+
 
 /**
  * Like a shop
@@ -125,15 +155,16 @@ export const _likeShop = (shopID) => async (dispatch) =>{
     try {
         const response=  await axios.put(`${API_URI}/shops/like/${shopID}`);
 
-        console.log(response)
+        //console.log(response)
         dispatch({
             type: SUCCESS_OR_ERROR_SHOPS,
             payload: { msg: response.data.msg, status:response.status }
         });
 
-        dispatch(_getMyPreferredShops()) ;//updated all components connected to this state of store
+        //updated all components connected to this state of store
+          dispatch(_getMyPreferredShops()) ;          
         
-        dispatch(_getMainShopList())
+          dispatch(_getMainShopList());
 
     } catch (error) {
         console.log(error);
@@ -151,6 +182,7 @@ export const _likeShop = (shopID) => async (dispatch) =>{
 
 /**
  * UnLike a shop
+ * add user inside table dislikes shop
  */
 export const _unLikeShop = (shopID) => async (dispatch) => {
 
@@ -162,16 +194,17 @@ export const _unLikeShop = (shopID) => async (dispatch) => {
         const response = await axios.put(`${API_URI}/shops/dislike/${shopID}`);
 
         console.log(response)
-        dispatch({
+        dispatch({                                      //This dislike action hide shop from main list and add user in dislikes[] of shop model
             type: SUCCESS_OR_ERROR_SHOPS,         
             payload: { msg: response.data.msg, status: response.status }
         });
 
-        dispatch(_getMyPreferredShops()) ; //updated all components connected to this state of store
+        dispatch(_getMainShopList())                   //update new main list without shop disliked
 
-        dispatch(_getMainShopList())     //updated
-
-
+        setTimeout(() => 
+            dispatch(_removeDislikeUser(shopID))     //After 2h this action is called and remode user to inside dislikes[], to reappears shops in main list.
+        , TIME_OUT)
+      
     } catch (error) {
         console.log(error);
 

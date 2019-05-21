@@ -4,13 +4,18 @@ import { connect } from 'react-redux';
 import PropTypes from "prop-types";
 //Component
 import ShopItem from "./ShopItem";
-import AlertNotification from "./layout/AlertNotification";
+import AlertNotification from "../layout/AlertNotification";
 //Actions
-import { _setAlert } from '../actions/alert';
-import { _getMyPreferredShops, _removeShop } from "../actions/shop";
-import SpinnerLoader from './layout/SpinnerLoader';
+import { _setAlert } from '../../actions/alert';
+import { _getMyPreferredShops, _removeShop } from "../../actions/shop";
+import SpinnerLoader from '../layout/SpinnerLoader';
 
 
+/**
+ * ShopListPreferred Component
+ * display favorites shops of user.
+ * component child of Private Route
+ */
 
 const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops, _removeShop, status, errors }) => {
 
@@ -24,9 +29,7 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops, _r
         document.title = `Preferred Shop`;
 
         //Load default data shop list
-            _getMyPreferredShops();
-
-        console.log('mvmt')
+         _getMyPreferredShops();
 
     }, []) 
 
@@ -38,8 +41,6 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops, _r
      */
     useEffect(() => {
 
-      
-
         if (status.status === 200) {
             _setAlert(status.msg, "success");
 
@@ -50,7 +51,7 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops, _r
         }
 
         if (status.msg !== null && status.status === 404) {
-            _setAlert(status.msg, "danger");
+            _setAlert(status.msg, "primary");
 
         }
         if (status.msg !== null && status.status === 500 ) {
@@ -58,24 +59,21 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops, _r
 
         }
 
-    }, [status]); 
+    }, [status,_setAlert]); 
 
 
 
     /**
     * Remove A SHOP from prefrerred list
+    * Call action redux
     */
     const handleRemoveShopFromPreferredList = (e, id) => {
         e.preventDefault();
-        console.log(id)
         _removeShop(id);
-
-
-
     };
 
     /**
-     * Define () that return shops list nearby of user
+     * Define () that return preferred shops list of user
      * from store 
      */
     const renderShopList = () => {
@@ -86,11 +84,11 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops, _r
         }else{
             return shops.map((shop, id) => {
                 return <ShopItem
-                    key={id}
-                    shop={shop}
-                    preferred={true}
-                    handleRemoveCallback={handleRemoveShopFromPreferredList}
-                />
+                            key={id}
+                            shop={shop}
+                            preferred={true}   //To change appearance of the buttons
+                            handleRemoveCallback={handleRemoveShopFromPreferredList}
+                         />
 
             })  
         }
@@ -131,9 +129,7 @@ ShopListPreferred.propTypes = {
     shops: PropTypes.array,
     loading: PropTypes.bool,
     errors:PropTypes.object,
-    //isAuthentificated: PropTypes.func.isRequired,
     
-
 };
 
 
@@ -142,7 +138,7 @@ const mapStateToProps = state => ({
   shops: state.shop.preferred_shops,
   loading: state.shop.loading,
   errors: state.shop.errors,
-  //isAuthentificated: state.auth.isAuthentificated, //user already authentificated with private route
+  //isAuthentificated: state.auth.isAuthentificated, //user already authentificated with PrivateRoute
   status: state.shop.status
 });
 

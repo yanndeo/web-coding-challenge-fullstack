@@ -1,19 +1,23 @@
 import React, { Fragment, useEffect} from 'react'
-import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 import PropTypes from "prop-types";
 //Component
 import ShopItem from "./ShopItem";
-import AlertNotification from "./layout/AlertNotification";
-import SpinnerLoader from "./layout/SpinnerLoader";
-
-
+import AlertNotification from "../layout/AlertNotification";
+import SpinnerLoader from "../layout/SpinnerLoader";
 //Actions
-import { _setAlert } from '../actions/alert';
-import { _getDefaultShopList, _likeShop, _unLikeShop,_getMainShopList } from '../actions/shop';
+import { _setAlert } from '../../actions/alert';
+import { _getDefaultShopList, _likeShop, _unLikeShop,_getMainShopList } from '../../actions/shop'
 
 
-const ShopDefaultList = ({ _getDefaultShopList, _getMainShopList, _setAlert, location, default_shops, main_shops, loading, _likeShop, _unLikeShop, status, isAutenthificated}) => {
+/**
+ * ShopList Component:
+ * same Component for default-shop and main-shop
+ * depending on whether the user is connected or not
+ */
+
+const ShopList = ({ _getDefaultShopList, _getMainShopList, _setAlert, location, default_shops, main_shops, loading, _likeShop, _unLikeShop, status, isAuthentificated }) => {
+
 
   /**
    * Hook React 
@@ -22,9 +26,9 @@ const ShopDefaultList = ({ _getDefaultShopList, _getMainShopList, _setAlert, loc
   useEffect(()=>{
 
     //Define page's title
-    if (isAutenthificated ? document.title = `Main Page` : document.title = `Default Page`);
+    if (isAuthentificated ? document.title = `Main Page` : document.title = `Default Page`);
 
-    //Load default data shop list
+    //Load data shop list
     _getDefaultShopList();
 
     _getMainShopList();    
@@ -35,7 +39,7 @@ const ShopDefaultList = ({ _getDefaultShopList, _getMainShopList, _setAlert, loc
         _setAlert("Unauthorized : You must first be connected", "warning");
     }
 
-  }, [ ]) //=> specify just for mount and unmount()
+  }, [ ]) 
 
 
 
@@ -46,29 +50,28 @@ const ShopDefaultList = ({ _getDefaultShopList, _getMainShopList, _setAlert, loc
  */
   useEffect(() => {
 
+    //like or dislike
     if( status.status === 200){
       _setAlert("Success: successful operation... ", "success");
-
+      
     }
-
+    //Shop already like or dislike
     if (status.msg !== null && status.status === 409) {
       _setAlert(status.msg, "dark");
     }
-
+    //shop not exist
     if(status.msg !== null && status.status === 404 ){
       _setAlert(status.msg, "danger");
 
     }
+    //Server error
     if (status.msg !== null && status.status === 500) {
       _setAlert('Echec', "danger");
 
     }
 
-  }, [status]); 
+  }, [status, _setAlert]); 
 
-
-
-  console.log('Attempted', location.attempt)
 
 
   /**
@@ -77,10 +80,10 @@ const ShopDefaultList = ({ _getDefaultShopList, _getMainShopList, _setAlert, loc
    * else call _likeShop()
    */
   const handleLiked = (e, id) => {
-    e.preventDefault();
+   // e.preventDefault();
     console.log(id)
 
-    if(!isAutenthificated){
+    if (isAuthentificated){
       _likeShop(id)
 
     }else{
@@ -97,16 +100,25 @@ const ShopDefaultList = ({ _getDefaultShopList, _getMainShopList, _setAlert, loc
    * else call _unlikeShop()
    */
   const handleUnLiked =  (e, id) => {
-    e.preventDefault();
+    //e.preventDefault();
     console.log(id)
 
-    if (!isAutenthificated) {
+    if (isAuthentificated) {
       _unLikeShop(id)
+
     } else {
       _setAlert('Unauthorized : You must first be connect', 'warning')
     }
   };
 
+
+
+   /**
+    * Define shop variable
+    * And value assignment
+    */
+  let shops = [];
+  if (isAuthentificated ? (shops = main_shops) : (shops = default_shops));
 
 
 
@@ -117,10 +129,7 @@ const ShopDefaultList = ({ _getDefaultShopList, _getMainShopList, _setAlert, loc
    */
   const renderShopItem =()=>{
 
-    //if no connected show him default list .
-    if(isAutenthificated){
-
-      return default_shops.map((shop, id) => {
+      return shops.map((shop, id) => {
         return <ShopItem
                   key={id}
                   shop={shop}
@@ -128,19 +137,6 @@ const ShopDefaultList = ({ _getDefaultShopList, _getMainShopList, _setAlert, loc
                   handleUnLikeCallback={handleUnLiked}
                 />
       })
-      //if user is connected show him main list .
-    }else{
-
-      return main_shops.map((shop, id) => {
-        return <ShopItem
-                  key={id}
-                  shop={shop}
-                  handleLikeCallback={handleLiked}
-                  handleUnLikeCallback={handleUnLiked}
-                />
-
-      })
-    }
       
   };
 
@@ -150,57 +146,28 @@ const ShopDefaultList = ({ _getDefaultShopList, _getMainShopList, _setAlert, loc
   return (
 
     <Fragment>
-
+      <br/>
       <AlertNotification />
 
       <div className="site-section">
         <div className="container">
-          <h1> Tittre</h1>
           <div className="row">
     
             <div className="row col-md-12 ">
-              {!loading && (default_shops.length || main_shops.length > 0) ?  renderShopItem() : <SpinnerLoader/> }
+              
+                { !loading && shops.length > 0 ?  renderShopItem() : <SpinnerLoader/> }
             
-            </div>
-
-            <div className="row" data-aos="fade-up">
-              <div className="col-md-12 text-center">
-                <div className="site-block-27">
-                  <ul>
-                    <li>
-                      <Link to="#">&lt;</Link>
-                    </li>
-                    <li className="active">
-                      <span>1</span>
-                    </li>
-                    <li>
-                      <Link to="#">2</Link>
-                    </li>
-                    <li>
-                      <Link to="#">3</Link>
-                    </li>
-                    <li>
-                      <Link to="#">4</Link>
-                    </li>
-                    <li>
-                      <Link to="#">5</Link>
-                    </li>
-                    <li>
-                      <Link to="#">&gt;</Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
             </div>
           </div>
         </div>
       </div>
+
     </Fragment>
   );
 }
 
 
-ShopDefaultList.propTypes = {
+ShopList.propTypes = {
   attempt: PropTypes.bool,
 
   _setAlert: PropTypes.func.isRequired,
@@ -212,7 +179,7 @@ ShopDefaultList.propTypes = {
   default_shops: PropTypes.array.isRequired,
   main_shops: PropTypes.array.isRequired,
   loading: PropTypes.bool,
-  isAutenthificated: PropTypes.object
+  isAuthentificated: PropTypes.bool
 };
 
 
@@ -222,9 +189,9 @@ const mapStateToProps = state => ({
     default_shops: state.shop.default_shops_list,
     main_shops: state.shop.main_shops_list,
     loading: state.shop.loading,
-    isAutenthificated:  state.auth.isAutenthificated,
+    isAuthentificated:  state.auth.isAuthentificated,
     status :  state.shop.status
 
 });
 
-export default connect(mapStateToProps, { _getDefaultShopList ,_getMainShopList, _setAlert, _likeShop, _unLikeShop })(ShopDefaultList);
+export default connect(mapStateToProps, { _getDefaultShopList, _getMainShopList, _setAlert, _likeShop, _unLikeShop })(ShopList);

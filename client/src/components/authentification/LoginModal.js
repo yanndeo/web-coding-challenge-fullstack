@@ -1,4 +1,4 @@
-import React, { Fragment, useState } from "react";
+import React, { Fragment, useState , useEffect} from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -31,10 +31,20 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
         password: '',
     });
 
+  
 
     // const { email, password } = this.state;
     const { email, password } = formModalData;
 
+    useEffect(()=>{
+
+        if (isAuthentificated) {
+            return <Redirect to='/mainpage' />
+            //Windows.reload
+        };
+
+    },[]);
+    
 
    /**
     * close modal : 
@@ -49,7 +59,7 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
     /**
      * Maj state input fields text on change
      */
-    const onChange = (e) => {
+    let onChange = (e) => {
         setFormModalData({
             ...formModalData,
             [e.target.name]: e.target.value
@@ -62,27 +72,14 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
      * Call action redux to send request
      * to "/api/login"
      */
-    const onSubmit =  (e) => {
+    const onSubmit = (e) => {
         e.preventDefault();
-        console.log('UserLogin:', email, password)
+        //console.log('UserLogin:', email, password)
         _login(email, password);
 
     }
 
 
-
-    /**
-     * Redirect if user logged in
-     */
-    if (isAuthentificated) {
-        return <Redirect to='/mainpage' />
-   };
-
-  
-
-
-
-    console.log('modal', isOpen)
 
     return (
 
@@ -109,7 +106,7 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
                                     name="email"
                                     value={email}
                                     placeholder="Email"
-                                    onChange={(e)=>onChange(e) }
+                                    onChange={(e)=> onChange(e) }
                                 />
 
                                 <Label for="name">Password</Label>
@@ -118,7 +115,7 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
                                     name="password"
                                     value={password}
                                     placeholder="Password"
-                                    onChange={(e)=>onChange(e)}
+                                    onChange={(e)=> onChange(e)}
                                 />
                                 <br/>
 
@@ -141,17 +138,16 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
 }
 
 LoginModal.propTypes = {
-    _setIsOpen: PropTypes.func.isRequired,     //action
-    _login: PropTypes.func.isRequired,        //action
-    isAuthentificated: PropTypes.bool,       //piece of store
-    isOpen:PropTypes.bool,                  //piece of store
-
+  _setIsOpen: PropTypes.func.isRequired, //action
+  _login: PropTypes.func.isRequired, //action
+  isAuthentificated: PropTypes.bool, //piece of store
+  isOpen: PropTypes.bool //piece of store
 };
 
 // mappons le state dans les props du component.
 const mapStateToProps = state => ({
   isOpen: state.modal.isOpen,
-  isAuthentificated : state.auth.isAuthentificated
+  isAuthentificated: state.auth.isAuthentificated
 });
 
 export default connect(mapStateToProps, {_setIsOpen, _login})(LoginModal);

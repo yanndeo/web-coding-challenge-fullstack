@@ -11,7 +11,7 @@ const SubNavbar = () => {
                     <div className="col-md-12 mb-0 " >
 
                         <span className="text-left">
-                            <Link to="/">Nearby Shops</Link> 
+                            <Link to="/mainpage">Nearby Shops</Link> 
                             
                                 <span className="mx-2 mb-0">/</span> 
 

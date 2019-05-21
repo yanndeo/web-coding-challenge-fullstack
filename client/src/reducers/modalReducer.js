@@ -4,7 +4,7 @@ const initialState = { isOpen:false}
 
 export default function (state = initialState, action) {
 
-    let nextState
+    let nextState;
     switch (action.type) {
 
         case TOGGLE_MODAL:
