@@ -1,0 +1,8 @@
+{
+    "mongoURI":"mongodb://localhost/yanndeomern",
+    "jwtSecret": "web_coding_challenge",
+    "pwdSalt": 10,
+    "expirationTime" : 3600000,
+    "faker_data_shop" : 20
+} 
+

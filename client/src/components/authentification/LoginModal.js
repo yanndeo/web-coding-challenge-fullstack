@@ -34,8 +34,11 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
   
 
     // const { email, password } = this.state;
-    const { email, password } = formModalData;
+    const { email, password } = formModalData ;
 
+    /**
+     * Hook React
+     */
     useEffect(()=>{
 
         if (isAuthentificated) {
@@ -43,7 +46,7 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
             //Windows.reload
         };
 
-    },[]);
+    }, []);
     
 
    /**
@@ -74,7 +77,6 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
      */
     const onSubmit = (e) => {
         e.preventDefault();
-        //console.log('UserLogin:', email, password)
         _login(email, password);
 
     }

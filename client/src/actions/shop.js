@@ -155,7 +155,6 @@ export const _likeShop = (shopID) => async (dispatch) =>{
     try {
         const response=  await axios.put(`${API_URI}/shops/like/${shopID}`);
 
-        //console.log(response)
         dispatch({
             type: SUCCESS_OR_ERROR_SHOPS,
             payload: { msg: response.data.msg, status:response.status }
@@ -193,7 +192,6 @@ export const _unLikeShop = (shopID) => async (dispatch) => {
     try {
         const response = await axios.put(`${API_URI}/shops/dislike/${shopID}`);
 
-        console.log(response)
         dispatch({                                      //This dislike action hide shop from main list and add user in dislikes[] of shop model
             type: SUCCESS_OR_ERROR_SHOPS,         
             payload: { msg: response.data.msg, status: response.status }

@@ -29,6 +29,9 @@ const Register = ({ _setAlert, _register, _setIsOpen, isAuthentificate})=>{
         document.title = `Register`;
     });
 
+
+
+
     // const { name, email, password, password2 } = this.state;
     const { name, email, password, password2 } = formData;
 
