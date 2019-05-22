@@ -28,7 +28,7 @@ export const _getDefaultShopList = () => async dispatch => {
         });  
 
     } catch (error) {
-        console.log(error);
+       // console.log(error);
 
         dispatch({
             type: SUCCESS_OR_ERROR_SHOPS,
@@ -62,7 +62,7 @@ export const _getMainShopList = () => async dispatch => {
         });
 
     } catch (error) {
-        console.log(error);
+       // console.log(error);
 
         dispatch({
             type: SUCCESS_OR_ERROR_SHOPS,
@@ -98,7 +98,7 @@ export const _getMyPreferredShops = () => async dispatch => {
         });
 
     } catch (error) {
-        console.log(error);
+       // console.log(error);
 
         dispatch({
             type: SUCCESS_OR_ERROR_SHOPS,
@@ -166,7 +166,7 @@ export const _likeShop = (shopID) => async (dispatch) =>{
           dispatch(_getMainShopList());
 
     } catch (error) {
-        console.log(error);
+       // console.log(error);
 
         dispatch({
             type: SUCCESS_OR_ERROR_SHOPS,

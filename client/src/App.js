@@ -1,7 +1,7 @@
-import React,{ Fragment, useEffect } from 'react';
+
+import React, { Component, Fragment} from 'react'
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import { connect } from "react-redux";
-import PropTypes from "prop-types";
+
 //Utils
 import configTokenInHeader from "./utils/configTokenInHeader";
 import ErrorBoundary from "./utils/ErrorBoundary";
@@ -11,47 +11,46 @@ import Routes from './routing/routes';
 import LoginModal from './components/authentification/LoginModal';
 //Actions
 import { _loadUser } from "./actions/auth";
+import { Provider } from "react-redux";
 
+import store from "./store/index";
 
 if (localStorage.token) {
   configTokenInHeader(localStorage.token);
 }
 
-
-
-const App = ({_loadUser}) => {
-
+class App extends Component {
 
   
-  useEffect(()=>{
-    
-    _loadUser();
+  componentDidMount(){
+      store.dispatch(_loadUser())
 
-  },[]); //[]=> exécuter un effet une seule fois au montage puis au démontage.
- 
- 
-  return (
+  }
 
-    <ErrorBoundary>
-        <Router>
-          <Fragment> 
 
+
+  render () {
+    return (
+      <Provider store={store}>
+
+      <ErrorBoundary>
+        <Router >
+          <Fragment>
             <Switch>
               <Route component={Routes} />
             </Switch>
-
             <LoginModal />
-
           </Fragment>
         </Router>
-    </ErrorBoundary>
+      </ErrorBoundary>
+      </Provider> 
 
-  );
+    )
+  }
+
+  
 }
 
-App.propTypes = {
-  _loadUser: PropTypes.func.isRequired, //action
-};
 
-//export default App
-export default connect(null, { _loadUser })(App);
+export default App
+

@@ -24,15 +24,12 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops, _r
      * Define lifecycle component() 
      */
     useEffect(() => {
+      //Define page's title
+      document.title = `Preferred Shop`;
 
-        //Define page's title
-        document.title = `Preferred Shop`;
-
-        //Load default data shop list
-         _getMyPreferredShops();
-
-    }, []) 
-
+      //Load default data shop list
+      _getMyPreferredShops();
+    }, [_getMyPreferredShops]); 
 
 
     /**
@@ -77,6 +74,7 @@ const ShopListPreferred = ({ shops, loading, _setAlert, _getMyPreferredShops, _r
      * from store 
      */
     const renderShopList = () => {
+        //console.log('test')
 
         if(shops === null){
              _setAlert(errors.msg, 'primary');

@@ -23,11 +23,10 @@ export default function (state = initialState, action) {
 
     switch (type) {
 
-
         case USER_LOADED:
             return nextState = {
                 ...state,
-                isAuthentificated: true,
+                isAuthentificated: true, 
                 loading: false,
                 user: payload
             };

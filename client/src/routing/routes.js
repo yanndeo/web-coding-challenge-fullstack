@@ -13,24 +13,28 @@ import SubNavbar from '../components/layout/SubNavbar';
 
 
 
+
 const Routes = () => {
 
 
     return (
       <section className="container">
+
         <Navbar />
+        
         <SubNavbar />
+
         <Switch>
           <Route exact path="/" component={ShopList} />
-          <Route exact path="/default-page" component={ShopList} />
           <Route exact path="/register" component={Register} />
-          {/* <Route exact path="/login" component={LoginModal} /> */}
 
-          <PrivateRoute exact path="/favorites-shop" component={ShopListPreferred} />
+           <Route exact path="/default-page" component={ShopList} /> 
           <PrivateRoute exact path="/mainpage" component={ShopList} /> 
+          <PrivateRoute exact path="/favorites-shop" component={ShopListPreferred} />
 
-      {/*       <Route exact path="/favorites-shop" component={ShopListPreferred} /> 
-            <Route exact path="/mainpage" component={ShopList} />    */}
+
+           {/*<Route exact path="/favorites-shop" component={ShopListPreferred} /> 
+            <Route exact path="/mainpage" component={ShopList} /> */}
 
           <Route component={NotFound} />
         </Switch>

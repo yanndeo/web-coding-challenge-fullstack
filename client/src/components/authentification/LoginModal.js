@@ -1,4 +1,4 @@
-import React, { Fragment, useState , useEffect} from "react";
+import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
@@ -16,11 +16,11 @@ import {
 import AlertNotification from '../layout/AlertNotification';
 //Actions : _xxYYY
 import { _setIsOpen } from "../../actions/modal";
-import { _login } from '../../actions/auth';
+import {  _loginUser } from '../../actions/auth';
 
 
 
-const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
+const LoginModal = ({ isAuthentificated, isOpen, _setIsOpen, _loginUser} ) => {
 
 
     /**
@@ -36,14 +36,6 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
     // const { email, password } = this.state;
     const { email, password } = formModalData ;
 
-    /**
-     * Hook React
-     */
-    useEffect(()=>{
-
-      
-
-    }, []);
     
 
    /**
@@ -74,14 +66,21 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
      */
     const onSubmit = (e) => {
         e.preventDefault();
-        _login(email, password);
+        _loginUser(email, password);
+
+         toggle()
+
+        return <Redirect to = '/mainpage' />
 
     }
     
     if (isAuthentificated) {
-        return <Redirect to='/mainpage' />
+        console.log(isAuthentificated);
+       // toggle()
+        //r
         //Windows.reload
     };
+   
 
 
     return (
@@ -142,7 +141,7 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
 
 LoginModal.propTypes = {
   _setIsOpen: PropTypes.func.isRequired, //action
-  _login: PropTypes.func.isRequired, //action
+    _loginUser:PropTypes.func.isRequired,
   isAuthentificated: PropTypes.bool, //piece of store
   isOpen: PropTypes.bool //piece of store
 };
@@ -153,4 +152,4 @@ const mapStateToProps = state => ({
   isAuthentificated: state.auth.isAuthentificated
 });
 
-export default connect(mapStateToProps, {_setIsOpen, _login})(LoginModal);
+export default connect(mapStateToProps, { _setIsOpen, _loginUser, })(LoginModal);

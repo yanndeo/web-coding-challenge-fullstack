@@ -1,6 +1,14 @@
 import axios from "axios";
 //Types
-import { REGISTER_FAIL, REGISTER_SUCCESS, LOGIN_SUCCESS, LOGIN_FAIL, USER_LOADED, AUTH_ERROR, LOGOUT} from "./types";
+import {
+  REGISTER_FAIL,
+  REGISTER_SUCCESS,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  USER_LOADED,
+  AUTH_ERROR,
+  LOGOUT
+} from "./types";
 //Others actions
 import { _setAlert } from "./alert";
 
@@ -11,6 +19,30 @@ import configTokenInHeader from "../utils/configTokenInHeader";
 
 
 
+/**
+ * LOAD USER and update state with his informations
+ */
+export const _loadUser = () => async dispatch =>{
+
+    if (localStorage.token){
+        configTokenInHeader(localStorage.token);
+    }
+
+    try {
+        const res = await axios.get('/api/auth');
+           return dispatch({
+                type: USER_LOADED,
+                payload:res.data
+            });
+
+    } catch (error) {
+        console.log(error)
+        dispatch({
+            type: AUTH_ERROR
+        })
+    }
+
+};
 
 /**
  * REGISTER USER 
@@ -39,7 +71,9 @@ export const _register = ({ name, email, password  })=> async dispatch => {
         });
 
         //5- load user connected
-       //await (_loadUser());
+       await (_loadUser());
+
+        dispatch(_setAlert('You are connected', 'success'));
        
 
     } catch (error) {
@@ -70,7 +104,7 @@ export const _register = ({ name, email, password  })=> async dispatch => {
 /**
  * LOGIN USER
  */
-export const _login = ( email, password ) => async (dispatch) => {
+export const _loginUser = ( email, password ) => async (dispatch) => {
 
     const config = {
         headers: {
@@ -81,23 +115,24 @@ export const _login = ( email, password ) => async (dispatch) => {
     const userData = JSON.stringify({ email, password });
 
     try {
-        const response = await axios.post(`${API_URI}/login`, userData, config);
+        const response =  await axios.post(`${API_URI}/login`, userData, config);
 
-         dispatch({
+        dispatch({
             type: LOGIN_SUCCESS,
-            payload: response.data  
+            payload : response.data
         });
-
         dispatch(_loadUser());
 
-    }catch(error){
+        dispatch(_setAlert('You are connected', 'success'));
+
+
+        }catch(error){
 
         const errors = error.response.data.errors;
         if (errors) {
             for (const err of errors) {
                 dispatch(_setAlert(err.msg, 'danger')); 
             }
-
         } 
 
         dispatch({ type: LOGIN_FAIL })
@@ -120,21 +155,3 @@ export const _logout = () => dispatch => {
 
 
 
-/**
- * LOAD USER and update state with his informations
- */
-export const _loadUser = () => async (dispatch) => {
-
-    if (localStorage.token) {
-        configTokenInHeader(localStorage.token);   //set header request
-    }
-
-    try {
-        const response = await axios.get(`${API_URI}/auth`);
-
-        dispatch({type: USER_LOADED, payload: response.data });
-
-    } catch (error) {
-        dispatch({ type: AUTH_ERROR });
-    }
-};

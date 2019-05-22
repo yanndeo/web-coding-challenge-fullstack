@@ -23,23 +23,25 @@ const ShopList = ({ _getDefaultShopList, _getMainShopList, _setAlert, location, 
    * Hook React 
    * Define lifecycle component() and
    */
-  useEffect(()=>{
+  /* eslint-enable no-alert, no-console */
 
+  useEffect(() => {
     //Define page's title
-    if (isAuthentificated ? document.title = `Main Page` : document.title = `Default Page`);
-
-    //Load data shop list
-    _getDefaultShopList();
-
-    _getMainShopList();    
+    if (
+      isAuthentificated
+        ? (document.title = `Main Page`)
+        : (document.title = `Default Page`)
+    );
 
     //Check if the user has been redirected after an unauthorized action
     let hasAttempt = location.attempt;
     if (hasAttempt) {
-        _setAlert("Unauthorized : You must first be connected", "warning");
+      _setAlert("Unauthorized : You must first be connected", "warning");
     }
-
-  }, [ ]) 
+    //Load data shop list
+    _getDefaultShopList();
+    _getMainShopList();
+  }, [_getDefaultShopList, _getMainShopList, _setAlert, isAuthentificated, location]);
 
 
 
@@ -67,10 +69,10 @@ const ShopList = ({ _getDefaultShopList, _getMainShopList, _setAlert, location, 
     //Server error
     if (status.msg !== null && status.status === 500) {
       _setAlert('Echec', "danger");
-
     }
 
   }, [status, _setAlert]); 
+
 
 
 
@@ -99,9 +101,8 @@ const ShopList = ({ _getDefaultShopList, _getMainShopList, _setAlert, location, 
    * if isAuthentificated: false => call _setAlert() 
    * else call _unlikeShop()
    */
-  const handleUnLiked =  (e, id) => {
+  const handleUnLiked =  ( id) => {
     //e.preventDefault();
-    console.log(id)
 
     if (isAuthentificated) {
       _unLikeShop(id)

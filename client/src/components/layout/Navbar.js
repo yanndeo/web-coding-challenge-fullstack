@@ -7,20 +7,20 @@ import { _setIsOpen } from "../../actions/modal";
 import { _logout } from '../../actions/auth';
 import { _getMyPreferredShops } from "../../actions/shop";
 
-
-
-const Navbar = ({ auth: { isAuthentificated, loading ,user}, _logout, _setIsOpen, shops_liked, _getMyPreferredShops }) => {
+const Navbar = ({ auth: { isAuthentificated, loading, user }, _logout, _setIsOpen, shops_liked, _getMyPreferredShops,  }) => {
 
     
     /**
      * Hook React
      * Init shop_list length
      */
+    //eslint-enable no-alert, no-console 
+
     useEffect(() => {
 
       _getMyPreferredShops(); 
 
-    }, []);
+    }, [_getMyPreferredShops]);
 
 
 
@@ -107,6 +107,7 @@ Navbar.propTypes = {
   _getMyPreferredShops: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,     //piece of store
   shops_liked: PropTypes.array,
+
 };
 
 
@@ -115,4 +116,4 @@ const mapStateToProp = state => ({
   auth: state.auth,
   shops_liked: state.shop.preferred_shops,
 });
-export default connect(mapStateToProp, { _setIsOpen, _logout, _getMyPreferredShops  })(Navbar)
+export default connect(mapStateToProp, { _setIsOpen, _logout, _getMyPreferredShops })(Navbar)
