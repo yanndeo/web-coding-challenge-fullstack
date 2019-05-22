@@ -1,8 +1,5 @@
 # web-coding-challenge-fullstack
 
-# web-coding-challenge-fullstack
-
-# web-coding-challenge
 A fullStack application user managment and shop list - developed using React/Redux, Node, Express and MongoDB, with ES6.
 
 ### [Live Demo](https://webcodingchallenge.herokuapp.com/ "MERN web coding ")
