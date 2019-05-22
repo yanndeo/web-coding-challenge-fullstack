@@ -165,6 +165,7 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
 
         let shop = await Shop.getShopByID(req.params.shopID);
 
+        console.log(shop)
         if (!shop)
             return res.status(404).send({ msg: 'Sorry Shop not found' });
 
@@ -199,12 +200,13 @@ router.put('/dislike/:shopID', authorization, async(req, res) => {
         }
 
     } catch (error) {
-        console.log("user_like_shop", error.message);
+        console.log("user_unlike_shop", error.message);
 
         if (error.king === "ObjectId") {
-            res.status(404).send({ msg: "Sorry Shop not found" });
+           return res.status(404).send({ msg: "Sorry Shop not found" });
+        }else{
+            res.status(500).send("Server Error");
         }
-        res.status(500).send("Server Error");
     }
 
 });

@@ -200,7 +200,7 @@ export const _unLikeShop = (shopID) => async (dispatch) => {
         dispatch(_getMainShopList())                   //update new main list without shop disliked
 
         setTimeout(() => 
-            dispatch(_removeDislikeUser(shopID))     //After 2h this action is called and remode user to inside dislikes[], to reappears shops in main list.
+            dispatch(_removeDislikeUser(shopID))     //After 2h, this action is called and removes the user who does not like inside the [] dislikes. The store then reappears its main list.
         , TIME_OUT)
       
     } catch (error) {

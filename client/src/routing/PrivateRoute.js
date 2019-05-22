@@ -21,7 +21,7 @@ const PrivateRoute = ({
                             to={{
                                 pathname: '/default-page',
                                 state: { from: props.location },
-                               attempt: true
+                                attempt: true
                             }}
                         />
                     )

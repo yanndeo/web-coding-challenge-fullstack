@@ -23,7 +23,6 @@ const ShopList = ({ _getDefaultShopList, _getMainShopList, _setAlert, location, 
    * Hook React 
    * Define lifecycle component() and
    */
-  /* eslint-enable no-alert, no-console */
 
   useEffect(() => {
     //Define page's title
@@ -83,7 +82,6 @@ const ShopList = ({ _getDefaultShopList, _getMainShopList, _setAlert, location, 
    */
   const handleLiked = (e, id) => {
    // e.preventDefault();
-    console.log(id)
 
     if (isAuthentificated){
       _likeShop(id)
@@ -101,9 +99,7 @@ const ShopList = ({ _getDefaultShopList, _getMainShopList, _setAlert, location, 
    * if isAuthentificated: false => call _setAlert() 
    * else call _unlikeShop()
    */
-  const handleUnLiked =  ( id) => {
-    //e.preventDefault();
-
+  const handleUnLiked =  ( e,id) => {
     if (isAuthentificated) {
       _unLikeShop(id)
 

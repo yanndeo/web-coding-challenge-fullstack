@@ -74,12 +74,11 @@ const LoginModal = ({ isAuthentificated, isOpen, _setIsOpen, _loginUser} ) => {
 
     }
     
-    if (isAuthentificated) {
+   /*  if (isAuthentificated) {
         console.log(isAuthentificated);
-       // toggle()
-        //r
-        //Windows.reload
-    };
+        toggle()
+   
+    }; */
    
 
 
@@ -141,7 +140,8 @@ const LoginModal = ({ isAuthentificated, isOpen, _setIsOpen, _loginUser} ) => {
 
 LoginModal.propTypes = {
   _setIsOpen: PropTypes.func.isRequired, //action
-    _loginUser:PropTypes.func.isRequired,
+ _loginUser:PropTypes.func.isRequired,  //action
+
   isAuthentificated: PropTypes.bool, //piece of store
   isOpen: PropTypes.bool //piece of store
 };

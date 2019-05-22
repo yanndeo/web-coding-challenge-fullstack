@@ -12,10 +12,8 @@ const Navbar = ({ auth: { isAuthentificated, loading, user }, _logout, _setIsOpe
     
     /**
      * Hook React
-     * Init shop_list length
+     * Init shop_list length icon
      */
-    //eslint-enable no-alert, no-console 
-
     useEffect(() => {
 
       _getMyPreferredShops(); 

@@ -19,8 +19,7 @@ const ShopItem = ({ shop, preferred, isAuthentificated, handleLikeCallback, hand
                 
                 return (
                     <Fragment>
-                        <button type="button" className="btn btn-danger btn-sm" onClick={(e) => handleRemoveCallback(e, shop._id)} > Remove</button>
-                        &nbsp;&nbsp;
+                        <button type="button" className="btn btn-danger btn-sm" onClick={(e) => handleRemoveCallback(e, shop._id)} > Remove</button>&nbsp;&nbsp;
                     </Fragment>
                 )
 

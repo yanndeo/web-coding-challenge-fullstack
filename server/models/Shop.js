@@ -48,7 +48,12 @@ contact_information:{
             user: {
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "users"
-            }
+            },
+            dislikedAt:{
+                type: Date, 
+                default: Date.now
+             }
+            
         }
     ],
    likes: [

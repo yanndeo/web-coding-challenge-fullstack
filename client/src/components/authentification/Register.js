@@ -1,5 +1,5 @@
 import React, { Fragment, useState, useEffect } from "react";
-import { Link ,Redirect } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 import { connect } from "react-redux";
 import PropTypes from "prop-types";
 //Components
@@ -22,10 +22,10 @@ const Register = ({ _setAlert, _register, _setIsOpen, isAuthentificate})=>{
         password2: ''
     });
 
-
-    // Similaire à componentDidMount et componentDidUpdate :
+    /**
+     * Hook Reack : change page title
+     */
     useEffect(() => {
-        // Met à jour le titre du document via l’API du navigateur
         document.title = `Register`;
     });
 
@@ -36,33 +36,36 @@ const Register = ({ _setAlert, _register, _setIsOpen, isAuthentificate})=>{
     const { name, email, password, password2 } = formData;
 
 
-    //Maj state input fields text on change
+    /**
+     * Maj state input fields text on change
+     */
     const onChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     };
 
 
+
+    /**
+     *  User Registration 
+     *  on submit form
+     *  call action redux
+     */
     const onSubmit = async (e) => {
         e.preventDefault();
     
         //Check matching password
         if (password !== password2) {
-            _setAlert('Passwords do not match', 'danger'); //call action redux
+            _setAlert('Passwords do not match', 'danger'); 
             console.log('Register','password no correspondance');
 
         } else {
-            _register({ name, email, password }); //call action redux
+            _register({ name, email, password }); 
             console.log('Register', formData);
 
         }
     };
 
-
-    //Redirect if logged in
-    if (isAuthentificate) {
-        console.log('auth?: ',isAuthentificate)
-        return <Redirect to="/mainpage" />
-    }
+  
 
 
 

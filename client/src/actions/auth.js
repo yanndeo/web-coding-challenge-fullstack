@@ -36,13 +36,20 @@ export const _loadUser = () => async dispatch =>{
             });
 
     } catch (error) {
-        console.log(error)
+       // console.log(error)
         dispatch({
             type: AUTH_ERROR
         })
     }
 
 };
+
+
+
+
+
+
+
 
 /**
  * REGISTER USER 
@@ -71,7 +78,7 @@ export const _register = ({ name, email, password  })=> async dispatch => {
         });
 
         //5- load user connected
-       await (_loadUser());
+       await _loadUser();
 
         dispatch(_setAlert('You are connected', 'success'));
        
@@ -94,6 +101,10 @@ export const _register = ({ name, email, password  })=> async dispatch => {
 
 
 };
+
+
+
+
 
 
 
@@ -141,6 +152,14 @@ export const _loginUser = ( email, password ) => async (dispatch) => {
 
 
 };
+
+
+
+
+
+
+
+
 
 /**
  * LOGOUT 
