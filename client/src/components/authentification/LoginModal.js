@@ -41,10 +41,7 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
      */
     useEffect(()=>{
 
-        if (isAuthentificated) {
-            return <Redirect to='/mainpage' />
-            //Windows.reload
-        };
+      
 
     }, []);
     
@@ -80,7 +77,11 @@ const LoginModal = ({ isAuthentificated , isOpen, _setIsOpen , _login} ) => {
         _login(email, password);
 
     }
-
+    
+    if (isAuthentificated) {
+        return <Redirect to='/mainpage' />
+        //Windows.reload
+    };
 
 
     return (
